@@ -1,0 +1,955 @@
+<!doctype html>
+<html lang="en-GB">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
+<title>Group 7 Lab</title>
+<style>
+html{color-scheme:light}
+:root{padding-top:env(safe-area-inset-top,0px);padding-bottom:env(safe-area-inset-bottom,0px)}
+body{margin:0}
+img{max-width:100%}
+[hidden]{display:none!important}
+</style>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Atkinson+Hyperlegible:wght@400;700&family=Bricolage+Grotesque:opsz,wght@12..96,600;12..96,800&family=JetBrains+Mono:wght@500;700&display=swap">
+<style>
+:root{
+  --bg:#ebf0ee; --surface:#ffffff; --surface-2:#f1f5f3; --ink:#15211d; --muted:#53645d; --line:#c6d3cd;
+  --xa:#0f766e; --xa-soft:#d2eee8; --da:#6b3fbf; --da-soft:#e7def8; --share:#b07800; --share-soft:#f7ebc6;
+  --good:#1f7d48; --good-soft:#d9f0e2; --bad:#b3382f; --bad-soft:#f7dcd8;
+  --f-display:"Bricolage Grotesque","Segoe UI",system-ui,sans-serif;
+  --f-body:"Atkinson Hyperlegible","Segoe UI",system-ui,sans-serif;
+  --f-mono:"JetBrains Mono",ui-monospace,Menlo,Consolas,monospace;
+  --r:10px;
+}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){
+  --bg:#0f1715; --surface:#17221f; --surface-2:#1d2b27; --ink:#e3ece8; --muted:#94a8a0; --line:#2b3c36;
+  --xa:#4fd1c0; --xa-soft:#133a35; --da:#b496f2; --da-soft:#2c2244; --share:#f0c14b; --share-soft:#3a3016;
+  --good:#62cf91; --good-soft:#15352a; --bad:#f2837a; --bad-soft:#3d1d1b;
+  color-scheme:dark }}
+:root[data-theme="dark"]{
+  --bg:#0f1715; --surface:#17221f; --surface-2:#1d2b27; --ink:#e3ece8; --muted:#94a8a0; --line:#2b3c36;
+  --xa:#4fd1c0; --xa-soft:#133a35; --da:#b496f2; --da-soft:#2c2244; --share:#f0c14b; --share-soft:#3a3016;
+  --good:#62cf91; --good-soft:#15352a; --bad:#f2837a; --bad-soft:#3d1d1b;
+  color-scheme:dark }
+*{box-sizing:border-box}
+body{background:var(--bg);color:var(--ink);font-family:var(--f-body);font-size:16px;line-height:1.5}
+.page{max-width:1180px;margin:0 auto;padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:22px 48px;display:grid;gap:22px}
+.top{display:flex;flex-wrap:wrap;align-items:flex-end;justify-content:space-between;gap:16px}
+.brand{display:flex;align-items:center;gap:14px}
+.brand svg{flex:none}
+.eyebrow{margin:0;font-size:.74rem;letter-spacing:.09em;text-transform:uppercase;color:var(--muted);font-weight:700}
+h1{margin:2px 0 0;font-family:var(--f-display);font-weight:800;font-size:clamp(1.9rem,4.2vw,2.7rem);line-height:1.02;letter-spacing:-.025em;text-wrap:balance}
+h2{margin:0;font-family:var(--f-display);font-weight:600;font-size:1.06rem;letter-spacing:-.005em}
+p{margin:0}
+.tabs{display:flex;flex-wrap:wrap;gap:4px;background:var(--surface);border:1px solid var(--line);border-radius:14px;padding:4px}
+.tabs button{font:inherit;font-weight:700;font-size:.92rem;border:0;background:transparent;color:var(--muted);padding:8px 12px;border-radius:10px;cursor:pointer;display:flex;gap:8px;align-items:baseline}
+.tabs button .n{font-family:var(--f-mono);font-size:.72rem;opacity:.8}
+.tabs button:hover{color:var(--ink)}
+.tabs button[aria-selected="true"]{background:var(--ink);color:var(--bg)}
+:focus-visible{outline:3px solid var(--xa);outline-offset:2px}
+[role="tabpanel"]{display:grid;gap:22px}
+.intro{max-width:70ch;color:var(--muted)}
+.intro b{color:var(--ink)}
+.station{display:grid;grid-template-columns:minmax(0,1.4fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:860px){.station{grid-template-columns:minmax(0,1fr)}}
+.stage{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;min-width:0}
+.stage svg{width:100%;height:auto;display:block;max-width:100%}
+.stage-head{display:flex;justify-content:space-between;align-items:center;gap:10px;flex-wrap:wrap}
+.controls{display:grid;gap:20px;min-width:0}
+.ctl{display:grid;gap:9px;min-width:0}
+.small{font-size:.88rem;color:var(--muted)}
+.mono{font-family:var(--f-mono);font-variant-numeric:tabular-nums}
+.btn{font:inherit;font-weight:700;font-size:.93rem;padding:9px 14px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;line-height:1.2}
+.btn:hover:not(:disabled){border-color:var(--ink)}
+.btn.primary{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.btn:disabled{opacity:.42;cursor:not-allowed}
+.row{display:flex;flex-wrap:wrap;gap:8px;align-items:center}
+.chips{display:flex;flex-wrap:wrap;gap:6px}
+.chip{font:inherit;font-weight:700;padding:6px 12px;border-radius:999px;border:1px solid var(--line);background:var(--surface);color:var(--ink);cursor:pointer;min-width:46px}
+.chip[aria-pressed="true"]{background:var(--ink);color:var(--bg);border-color:var(--ink)}
+.chip.ans-right{background:var(--good-soft);border-color:var(--good);color:var(--ink)}
+.chip.ans-wrong{background:var(--bad-soft);border-color:var(--bad);color:var(--ink)}
+.seg{display:inline-flex;flex-wrap:wrap;border:1px solid var(--line);border-radius:8px;overflow:hidden;max-width:100%;width:max-content}
+.seg button{font:inherit;font-weight:700;border:0;background:var(--surface);color:var(--muted);padding:8px 14px;cursor:pointer}
+.seg button+button{border-left:1px solid var(--line)}
+.seg button[aria-pressed="true"]{background:var(--ink);color:var(--bg)}
+.pill{display:inline-block;padding:3px 11px;border-radius:999px;font-weight:700;font-size:.82rem;background:var(--surface-2);border:1px solid var(--line)}
+.pill.on{background:var(--good-soft);border-color:var(--good)}
+.pill.warn{background:var(--share-soft);border-color:var(--share)}
+.verdict{border-radius:var(--r);padding:12px 14px;background:var(--surface);border:1px solid var(--line);display:grid;gap:4px}
+.verdict.good{background:var(--good-soft);border-color:var(--good)}
+.verdict.bad{background:var(--bad-soft);border-color:var(--bad)}
+.verdict strong{font-family:var(--f-display);font-size:1.08rem;font-weight:600}
+.msg{font-size:.92rem;min-height:1.4em}
+.msg.good{color:var(--good)} .msg.bad{color:var(--bad)}
+sub,sup{font-size:.68em;line-height:0}
+.caption{font-size:.95rem;max-width:70ch}
+.check{display:flex;gap:10px;align-items:center;font-weight:700;cursor:pointer}
+.check input{width:18px;height:18px;accent-color:var(--ink);margin:0}
+.findings{display:grid;gap:8px}
+.finding{display:grid;grid-template-columns:minmax(0,1fr) auto;gap:4px 10px;padding:10px 12px;border:1px solid var(--line);border-radius:8px;background:var(--surface)}
+.finding .ft{font-weight:700}
+.finding .fd{grid-column:1/-1;font-size:.88rem;color:var(--muted)}
+.finding .st{font-size:.74rem;font-weight:700;padding:2px 9px;border-radius:999px;border:1px solid var(--line);align-self:start;white-space:nowrap}
+.finding.found{border-color:var(--good)}
+.finding.found .st{background:var(--good-soft);border-color:var(--good)}
+.sortbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between}
+.score{font-family:var(--f-display);font-weight:800;font-size:1.4rem}
+.cards{display:grid;grid-template-columns:repeat(auto-fill,minmax(250px,1fr));gap:12px}
+.card{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:14px;display:grid;gap:10px;align-content:start}
+.card.right{border-color:var(--good)}
+.card.wrong{border-color:var(--bad)}
+.card h3{margin:0;font-family:var(--f-display);font-weight:600;font-size:1.05rem}
+.card .els{font-size:.86rem;color:var(--muted);margin-top:-6px}
+.card .choices{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:6px}
+.card .choices button{font:inherit;font-size:.8rem;font-weight:700;padding:7px 4px;border-radius:7px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer;line-height:1.15}
+.card .choices button:hover:not(:disabled){border-color:var(--ink)}
+.card .choices button:disabled{cursor:default}
+.card .choices button.right{background:var(--good-soft);border-color:var(--good)}
+.card .choices button.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.card .why{font-size:.88rem;color:var(--muted)}
+.card .why b{color:var(--ink)}
+.quizbar{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;max-width:860px}
+.quiz{display:grid;gap:14px;max-width:860px}
+.q{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:10px}
+.q .qn{font-family:var(--f-mono);font-size:.74rem;color:var(--muted);font-weight:700}
+.q .qt{font-weight:700;font-size:1.02rem}
+.opts{display:grid;grid-template-columns:repeat(2,minmax(0,1fr));gap:8px}
+@media (max-width:560px){.opts{grid-template-columns:minmax(0,1fr)}}
+.opt{font:inherit;text-align:left;padding:9px 12px;border-radius:8px;border:1px solid var(--line);background:var(--surface-2);color:var(--ink);cursor:pointer}
+.opt:hover:not(:disabled){border-color:var(--ink)}
+.opt:disabled{cursor:default}
+.opt.right{background:var(--good-soft);border-color:var(--good);font-weight:700}
+.opt.wrong{background:var(--bad-soft);border-color:var(--bad)}
+.fb{font-size:.92rem;color:var(--muted)}
+.fb b{color:var(--ink)}
+footer{font-size:.8rem;color:var(--muted);border-top:1px solid var(--line);padding-top:12px;max-width:95ch}
+@media (prefers-reduced-motion: reduce){*{scroll-behavior:auto}}
+.big{font-family:var(--f-display);font-weight:800;font-size:clamp(1.6rem,3.5vw,2.2rem);line-height:1}
+.chips.sm .chip{min-width:0;padding:5px 10px;font-size:.9rem}
+.mini{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:8px}
+.result{display:grid;gap:2px;border-radius:var(--r);padding:10px 12px;background:var(--surface-2);border:1px solid var(--line);min-width:0}
+.result .rl{font-size:.72rem;letter-spacing:.06em;color:var(--muted);font-weight:700}
+.result .rv{font-family:var(--f-display);font-weight:800;font-size:1.25rem;line-height:1.15;overflow-wrap:anywhere}
+.panel{background:var(--surface);border:1px solid var(--line);border-radius:var(--r);padding:16px;display:grid;gap:12px;align-content:start;min-width:0}
+.pt-cell{cursor:pointer}
+.pt-cell:focus{outline:none}
+.pt-cell:focus rect,.pt-cell:hover rect{stroke:var(--ink);stroke-width:2}
+.s-head{fill:var(--ink);font-family:var(--f-display);font-weight:600;font-size:15px}
+.s-txt{fill:var(--ink);font-family:var(--f-mono);font-size:13px}
+.s-mut{fill:var(--muted);font-family:var(--f-mono);font-size:12px}
+.s-onfill{fill:#fff;font-family:var(--f-display);font-weight:800}
+.s-lab{fill:var(--ink);font-family:var(--f-body);font-size:14px}
+.ans-right{background:var(--good-soft)!important;border-color:var(--good)!important}
+.ans-wrong{background:var(--bad-soft)!important;border-color:var(--bad)!important}
+.seg.wrap{width:auto;display:flex}
+.seg.wrap button{flex:1 1 auto}
+@media (max-width:560px){.s-txt{font-size:18px}.s-mut{font-size:16px}.s-head{font-size:20px}.mini{grid-template-columns:repeat(2,minmax(0,1fr))}}
+/* ---------- Group 7 topic tokens ---------- */
+:root{--h-f:#b9a91f;--h-cl:#6f9a1e;--h-br:#a3361f;--h-i:#6b3a96;--glass:#9bb0aa;--aq:#e2edf1;--org:#f3f1e4;--bench:#d9e1dd;--mist:#8e9b97}
+@media (prefers-color-scheme: dark){ :root:not([data-theme="light"]){--h-f:#e6d55a;--h-cl:#a9d65a;--h-br:#f08060;--h-i:#b48ae6;--glass:#6d827c;--aq:#24363b;--org:#33362c;--bench:#22302c;--mist:#e6ecea}}
+:root[data-theme="dark"]{--h-f:#e6d55a;--h-cl:#a9d65a;--h-br:#f08060;--h-i:#b48ae6;--glass:#6d827c;--aq:#24363b;--org:#33362c;--bench:#22302c;--mist:#e6ecea}
+.two{display:grid;grid-template-columns:minmax(0,1fr) minmax(0,1fr);gap:22px;align-items:start}
+@media (max-width:860px){.two{grid-template-columns:minmax(0,1fr)}}
+.panel h2 .small,.ctl h2 .small{font-family:var(--f-body);font-weight:400}
+.panel svg{width:100%;height:auto;display:block;max-width:100%}
+.results{display:grid;grid-template-columns:repeat(auto-fit,minmax(120px,1fr));gap:8px}
+.result.hl{background:var(--xa-soft);border-color:var(--xa)}
+.tag{display:inline-block;font-size:.7rem;font-weight:700;letter-spacing:.06em;text-transform:uppercase;padding:2px 8px;border-radius:999px;background:var(--share-soft);border:1px solid var(--share);color:var(--ink);vertical-align:2px;margin-left:6px}
+.s-sym{fill:var(--ink);font-family:var(--f-display);font-weight:800}
+.range{display:flex;gap:12px;align-items:center;flex-wrap:wrap}
+.range input[type=range]{flex:1 1 180px;accent-color:var(--ink);min-width:0}
+.range output{font-family:var(--f-mono);font-weight:700;min-width:5.5em}
+.stepper{display:inline-flex;align-items:center;border:1px solid var(--line);border-radius:8px;overflow:hidden}
+.stepper button{font:inherit;font-weight:800;width:36px;height:36px;border:0;background:var(--surface-2);color:var(--ink);cursor:pointer}
+.stepper output{min-width:2.4em;text-align:center;font-family:var(--f-mono);font-weight:700}
+.grid3{display:grid;grid-template-columns:auto repeat(3,minmax(0,1fr));gap:6px;font-size:.84rem}
+.grid3 .gh{font-weight:700;color:var(--muted);font-size:.76rem;align-self:end;text-align:center}
+.grid3 .gr{font-weight:700;color:var(--muted);font-size:.76rem;align-self:center;white-space:nowrap}
+.grid3 .cell{border:1px solid var(--line);border-radius:7px;background:var(--surface-2);color:var(--muted);min-height:46px;display:grid;place-items:center;text-align:center;padding:5px 4px;line-height:1.2}
+.grid3 .cell.found{background:var(--xa-soft);border-color:var(--xa);color:var(--ink);font-weight:700}
+.grid3 .cell.na{background:transparent;border-style:dashed}
+.swatch{display:inline-block;width:.9em;height:.9em;border-radius:3px;vertical-align:-1px;margin-right:4px;border:1px solid var(--line)}
+.obsgrid{display:grid;grid-template-columns:repeat(auto-fit,minmax(150px,1fr));gap:8px;font-size:.9rem}
+.obsgrid div{padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);display:grid;gap:2px}
+.obsgrid b{font-family:var(--f-display)}
+.eqs{display:grid;gap:6px}
+.eqs .eqn small{display:block;font-family:var(--f-body);color:var(--muted);font-size:.8rem}
+.ms{display:grid;gap:6px}
+.ms label{display:flex;gap:10px;align-items:flex-start;padding:8px 10px;border:1px solid var(--line);border-radius:8px;background:var(--surface-2);cursor:pointer}
+.ms input{width:18px;height:18px;margin:2px 0 0;accent-color:var(--good);flex:none}
+textarea{font:inherit;width:100%;min-height:96px;padding:10px;border-radius:8px;border:1px solid var(--line);background:var(--surface);color:var(--ink);resize:vertical}
+.qbox{padding:12px 14px;border-radius:8px;background:var(--surface-2);border:1px solid var(--line)}
+.qbox .src{display:block;font-size:.8rem;color:var(--muted);margin-top:4px}
+.hint{font-size:.85rem;color:var(--muted)}
+.card .choices.long{grid-template-columns:minmax(0,1fr)}
+.card .choices.long button{text-align:left;padding:7px 10px}
+</style>
+</head>
+<body>
+<div class="page">
+  <header class="top">
+    <div class="brand">
+      <svg width="40" height="52" viewBox="0 0 40 52" aria-hidden="true">
+        <rect x="8" y="2" width="24" height="11" rx="2" fill="var(--h-f)"/><rect x="8" y="14.5" width="24" height="11" rx="2" fill="var(--h-cl)"/>
+        <rect x="8" y="27" width="24" height="11" rx="2" fill="var(--h-br)"/><rect x="8" y="39.5" width="24" height="11" rx="2" fill="var(--h-i)"/>
+      </svg>
+      <div>
+        <p class="eyebrow">International AS Chemistry · OxfordAQA 9620 · 3.2.3</p>
+        <h1>Group 7 Lab</h1>
+      </div>
+    </div>
+    <nav class="tabs" role="tablist" aria-label="Lab stations">
+      <button role="tab" id="tab-trend" aria-controls="p-trend" aria-selected="true"><span class="n">1</span>Trends</button>
+      <button role="tab" id="tab-disp" aria-controls="p-disp" aria-selected="false" tabindex="-1"><span class="n">2</span>Displacement</button>
+      <button role="tab" id="tab-acid" aria-controls="p-acid" aria-selected="false" tabindex="-1"><span class="n">3</span>Sulfuric acid</button>
+      <button role="tab" id="tab-ag" aria-controls="p-ag" aria-selected="false" tabindex="-1"><span class="n">4</span>Halide tests</button>
+      <button role="tab" id="tab-cl" aria-controls="p-cl" aria-selected="false" tabindex="-1"><span class="n">5</span>Chlorine and water</button>
+      <button role="tab" id="tab-exam" aria-controls="p-exam" aria-selected="false" tabindex="-1"><span class="n">6</span>Exam practice</button>
+      <button role="tab" id="tab-quiz" aria-controls="p-quiz" aria-selected="false" tabindex="-1"><span class="n">7</span>Quiz</button>
+    </nav>
+  </header>
+
+  <!-- 1 TRENDS -->
+  <section id="p-trend" role="tabpanel" aria-labelledby="tab-trend">
+    <p class="intro">The halogens exist as <b>diatomic molecules, X₂</b>, and every atom has <b>seven outer electrons</b>. Going down from fluorine to iodine, each atom has <b>one more shell</b>. Pick a halogen, predict each trend, then heat the halogens and look inside a liquid.</p>
+    <div class="station">
+      <div class="stage">
+        <div class="stage-head"><span class="big" id="trName">Fluorine</span><span class="pill" id="trPill">pale yellow gas</span></div>
+        <svg id="trSvg" viewBox="0 0 560 320" role="img" aria-label="Atom of the chosen halogen drawn to scale, and a sample of the element at 298 K"></svg>
+        <div class="results" id="trRead"></div>
+        <p class="caption" id="trCap"></p>
+      </div>
+      <div class="controls">
+        <div class="ctl"><h2>Choose a halogen</h2><div class="chips sm" id="trPick"></div></div>
+        <div class="ctl"><h2>Trend chart</h2><div class="seg wrap" id="trProp"></div></div>
+        <div class="ctl"><h2 id="trPredQ">Predict first</h2><div class="chips sm" id="trPred"></div><p class="msg" id="trPredFb"></p></div>
+        <div class="cover"><svg id="trChart" viewBox="0 0 360 250" role="img" aria-label="Bar chart of the chosen property for F, Cl, Br and I"></svg><div class="veil" id="trVeil">Make a prediction to reveal the data</div></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h2>Heat the halogens <span class="small">· states at any temperature</span></h2>
+        <div class="range"><label for="stT">Temperature</label><input type="range" id="stT" min="20" max="500" step="1" value="298"><output id="stOut">298 K</output></div>
+        <div class="row" id="stJump"></div>
+        <svg id="stSvg" viewBox="0 0 560 250" role="img" aria-label="Particle models of F₂, Cl₂, Br₂ and I₂ at the chosen temperature"></svg>
+        <p class="caption" id="stCap"></p>
+      </div>
+      <div class="panel">
+        <h2>Inside the liquid <span class="small">· van der Waals forces</span></h2>
+        <svg id="vdwSvg" viewBox="0 0 360 230" role="img" aria-label="Two halogen molecules attracting each other through temporary and induced dipoles"></svg>
+        <div class="row"><button class="btn primary" id="vdwGo">Show a temporary dipole</button></div>
+        <p class="caption" id="vdwCap"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 2 DISPLACEMENT -->
+  <section id="p-disp" role="tabpanel" aria-labelledby="tab-disp" hidden>
+    <p class="intro">A halogen is an <b>oxidising agent</b>: it gains electrons. A more reactive halogen <b>displaces</b> a less reactive halogen from a solution of its halide ions. Choose a halogen solution and a halide solution, predict, then add. Shake with cyclohexane to see the colour of the halogen more clearly.</p>
+    <div class="station">
+      <div class="stage">
+        <div class="stage-head"><span class="big" id="dName">Cl₂ + KBr</span><span class="pill" id="dPill">ready</span></div>
+        <svg id="dSvg" viewBox="0 0 520 330" role="img" aria-label="Test tube showing the halide solution, the drops of halogen solution and any colour change"></svg>
+        <p class="small" id="dKey"></p>
+        <p class="eqn" id="dEq">Equation appears here.</p>
+        <p class="caption" id="dCap"></p>
+      </div>
+      <div class="controls">
+        <div class="ctl"><h2>Halogen solution</h2><div class="chips sm" id="dHal"></div></div>
+        <div class="ctl"><h2>Halide solution</h2><div class="chips sm" id="dHx"></div></div>
+        <div class="ctl"><h2>Predict: will it react?</h2><div class="chips sm" id="dPred"></div><p class="msg" id="dPredFb"></p></div>
+        <div class="row"><button class="btn primary" id="dGo" disabled>Add halogen solution</button><button class="btn" id="dShake" disabled>Add cyclohexane and shake</button><button class="btn" id="dReset">Clean tube</button></div>
+        <div class="ctl"><h2>Results grid <span class="small">· <span id="dCount">0</span> / 6</span></h2><div class="grid3" id="dGrid"></div></div>
+        <div class="verdict good" id="dVer" hidden><strong>Order of oxidising ability: Cl₂ &gt; Br₂ &gt; I₂</strong><span>Each halogen displaces only the halides below it in the group. Oxidising ability decreases down Group 7.</span></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h2>Mystery halide Y</h2>
+        <p class="small">Solution Y contains Cl⁻, Br⁻ or I⁻. Add each halogen solution to a fresh sample of Y, then decide.</p>
+        <svg id="mySvg" viewBox="0 0 520 250" role="img" aria-label="Three tubes of solution Y with different halogen solutions added"></svg>
+        <div class="row" id="myAdd"></div>
+        <div class="ctl"><h2>Y contains <span class="small">· score <span class="mono" id="myScore">0 / 0</span></span></h2><div class="chips sm" id="myGuess"></div></div>
+        <p class="msg" id="myCap"></p>
+        <div class="row"><button class="btn" id="myNew">New mystery</button></div>
+      </div>
+      <div class="panel">
+        <h2>Why oxidising ability falls</h2>
+        <div class="chips sm" id="eaPick"></div>
+        <svg id="eaSvg" viewBox="0 0 360 260" role="img" aria-label="An electron approaching a halogen atom; the attraction gets weaker as the atom gets bigger"></svg>
+        <p class="caption" id="eaCap"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 3 SULFURIC ACID -->
+  <section id="p-acid" role="tabpanel" aria-labelledby="tab-acid" hidden>
+    <p class="intro">Halide ions are <b>reducing agents</b>: they lose electrons. Concentrated sulfuric acid reacts with every solid sodium halide, but only some halides are strong enough reducing agents to <b>reduce the sulfur</b> in H₂SO₄. Predict, add the acid, and read the oxidation-state ladder.</p>
+    <div class="station">
+      <div class="stage">
+        <div class="stage-head"><span class="big" id="aName">NaCl(s)</span><span class="pill" id="aPill">ready</span></div>
+        <svg id="aSvg" viewBox="0 0 520 330" role="img" aria-label="Solid sodium halide in a test tube with concentrated sulfuric acid added; fumes and solids that form"></svg>
+        <ul class="obs" id="aObs"><li>Choose a solid, predict, then add the acid.</li></ul>
+        <p class="caption" id="aCap"></p>
+      </div>
+      <div class="controls">
+        <div class="ctl"><h2>Solid sodium halide</h2><div class="chips sm" id="aPick"></div></div>
+        <div class="ctl"><h2>Predict: what happens to the sulfur?</h2><div class="chips sm" id="aPred"></div><p class="msg" id="aPredFb"></p></div>
+        <div class="row"><button class="btn primary" id="aGo" disabled>Add concentrated H₂SO₄</button><button class="btn" id="aReset">New tube</button></div>
+        <div class="ctl"><h2>Equations</h2><div class="eqs" id="aEqs"><p class="small">Equations appear after the reaction.</p></div></div>
+        <div class="findings" id="aFind"></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h2>Sulfur oxidation-state ladder</h2>
+        <svg id="ladSvg" viewBox="0 0 360 300" role="img" aria-label="Oxidation states of sulfur from +6 in H₂SO₄ down to −2 in H₂S, showing how far each halide reduces it"></svg>
+        <p class="caption" id="ladCap"></p>
+      </div>
+      <div class="panel">
+        <h2>Balance it <span class="small">· iodide ions + H₂SO₄</span></h2>
+        <p class="small">Pick the sulfur product, then choose how many iodide ions are needed to supply the electrons.</p>
+        <div class="seg" id="hbProd"></div>
+        <div class="row"><span class="stepper"><button id="hbMinus" aria-label="Fewer iodide ions">−</button><output id="hbN">2</output><button id="hbPlus" aria-label="More iodide ions">+</button></span><span>I⁻ ions</span><button class="btn primary" id="hbCheck">Check</button></div>
+        <div class="eqs" id="hbOut"></div>
+        <p class="msg" id="hbFb"></p>
+      </div>
+    </div>
+  </section>
+
+  <!-- 4 HALIDE TESTS -->
+  <section id="p-ag" role="tabpanel" aria-labelledby="tab-ag" hidden>
+    <p class="intro">Silver ions form <b>coloured precipitates</b> with chloride, bromide and iodide ions. The solution is first acidified with <b>dilute nitric acid</b>. Ammonia solution then tells apart the precipitates, because the silver halides dissolve in ammonia less and less down the group.</p>
+    <div class="station">
+      <div class="stage">
+        <div class="stage-head"><span class="big" id="gTitle">All four halides</span><span class="pill" id="gPill">step 1</span></div>
+        <svg id="gSvg" viewBox="0 0 560 300" role="img" aria-label="Test tubes of halide solutions during the silver nitrate and ammonia test"></svg>
+        <div class="obsgrid" id="gObs"></div>
+        <p class="caption" id="gCap"></p>
+      </div>
+      <div class="controls">
+        <div class="ctl"><h2>Mode</h2><div class="seg" id="gMode"><button data-m="all" aria-pressed="true">All four ions</button><button data-m="mys" aria-pressed="false">Mystery tube</button></div></div>
+        <div class="ctl"><h2>Run the test in order</h2>
+          <div class="row"><button class="btn primary" id="gS0">1 · Add dilute HNO₃</button><button class="btn" id="gS1">2 · Add AgNO₃(aq)</button></div>
+          <div class="row"><button class="btn" id="gS2">3 · Add dilute NH₃(aq)</button><button class="btn" id="gS3">4 · Add concentrated NH₃(aq)</button></div>
+          <div class="row"><button class="btn" id="gReset">Fresh samples</button></div></div>
+        <div class="ctl" id="gGuessBox" hidden><h2>The mystery ion is <span class="small">· score <span class="mono" id="gScore">0 / 0</span></span></h2><div class="chips sm" id="gGuess"></div></div>
+      </div>
+    </div>
+    <div class="panel">
+      <h2>Which acid should you use?</h2>
+      <p class="small">Three solutions: sodium chloride, sodium carbonate and sodium nitrate. Choose how to acidify, then add silver nitrate. Only the chloride should give a precipitate.</p>
+      <div class="row"><div class="seg" id="gAcid"><button data-a="none" aria-pressed="false">No acid</button><button data-a="hcl" aria-pressed="false">Dilute HCl</button><button data-a="hno3" aria-pressed="true">Dilute HNO₃</button></div><button class="btn primary" id="gaGo">Add acid, then AgNO₃</button></div>
+      <svg id="gaSvg" viewBox="0 0 560 290" role="img" aria-label="Three tubes showing the result with the chosen acid"></svg>
+      <div class="verdict" id="gaVer"><strong>Choose an acid and run the test.</strong></div>
+    </div>
+  </section>
+
+  <!-- 5 CHLORINE AND WATER -->
+  <section id="p-cl" role="tabpanel" aria-labelledby="tab-cl" hidden>
+    <p class="intro">When chlorine reacts with water or with cold dilute sodium hydroxide, some chlorine atoms are <b>oxidised</b> and others are <b>reduced</b> in the same reaction. This is <b>disproportionation</b>. Run each reaction and follow the oxidation states, then test chlorine water and decide how much chlorine belongs in drinking water.</p>
+    <div class="station">
+      <div class="stage">
+        <div class="stage-head"><span class="big" id="cName">Chlorine + water</span><span class="pill" id="cPill">ready</span></div>
+        <svg id="cSvg" viewBox="0 0 560 320" role="img" aria-label="Chlorine molecules reacting, with the oxidation state of each chlorine atom shown"></svg>
+        <p class="eqn" id="cEq">Run a reaction to see its equation.</p>
+        <p class="caption" id="cCap"></p>
+      </div>
+      <div class="controls">
+        <div class="ctl"><h2>Reaction</h2><div class="seg wrap" id="cRx"></div></div>
+        <div class="ctl"><h2>Predict: what happens to chlorine?</h2><div class="chips sm" id="cPred"></div><p class="msg" id="cPredFb"></p></div>
+        <div class="row"><button class="btn primary" id="cGo" disabled>Run the reaction</button></div>
+        <div class="findings" id="cFind"></div>
+      </div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h2>Universal indicator test</h2>
+        <div class="seg wrap" id="uiS"></div>
+        <div class="row"><button class="btn primary" id="uiGo">Add universal indicator</button></div>
+        <svg id="uiSvg" viewBox="0 0 360 230" role="img" aria-label="Beaker of the chosen solution as universal indicator is added"></svg>
+        <p class="caption" id="uiCap"></p>
+      </div>
+      <div class="panel">
+        <h2>Treating drinking water</h2>
+        <div class="range"><label for="wtDose">Chlorine dose</label><input type="range" id="wtDose" min="0" max="8" step="0.1" value="0"><output id="wtOut">0.0 mg dm⁻³</output></div>
+        <label class="check"><input type="checkbox" id="wtOrg"> Water contains organic matter</label>
+        <svg id="wtSvg" viewBox="0 0 360 200" role="img" aria-label="Water sample with bacteria, and meters for benefit and risk"></svg>
+        <div class="verdict" id="wtVer"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 6 EXAM PRACTICE -->
+  <section id="p-exam" role="tabpanel" aria-labelledby="tab-exam" hidden>
+    <p class="intro">Exam questions on Group 7 give you <b>observations</b> and ask what they show. Work through the cards, solve the Compound X case (based on <b>OxfordAQA CH01, June 2025, Question 5</b>), then try three exam-style questions and mark them yourself.</p>
+    <div class="panel">
+      <div class="sortbar"><h2>Observation detective</h2><span class="score" id="odScore">0 / 8</span><button class="btn" id="odReset">Reset cards</button></div>
+      <div class="cards" id="odCards"></div>
+    </div>
+    <div class="two">
+      <div class="panel">
+        <h2>Compound X <span class="small">· a Group 2 halide</span></h2>
+        <p class="small">X contains a Group 2 metal ion and a halide ion. Run any tests, then identify both ions.</p>
+        <div class="row" id="cxTests"></div>
+        <ul class="obs" id="cxObs"><li>No tests yet.</li></ul>
+        <div class="ctl"><h2>Metal ion</h2><div class="chips sm" id="cxCat"></div></div>
+        <div class="ctl"><h2>Halide ion</h2><div class="chips sm" id="cxAn"></div></div>
+        <div class="row"><button class="btn primary" id="cxCheck">Check</button><button class="btn" id="cxNew">New compound</button><span class="mono" id="cxScore">0 / 0</span></div>
+        <p class="msg" id="cxFb"></p>
+      </div>
+      <div class="panel">
+        <h2>Exam-style questions</h2>
+        <div class="seg" id="exQ"></div>
+        <div class="qbox" id="exBody"></div>
+        <textarea id="exAns" aria-label="Your answer" placeholder="Write your answer here, then check it against the mark scheme."></textarea>
+        <div class="row"><button class="btn primary" id="exShow">Show the mark scheme</button><span class="mono" id="exScore"></span></div>
+        <div class="ms" id="exMS" hidden></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- 7 QUIZ -->
+  <section id="p-quiz" role="tabpanel" aria-labelledby="tab-quiz" hidden>
+    <div class="quizbar"><p class="intro">Twelve questions on the whole topic. Each one tells you why after you answer.</p><span class="score" id="score">0 / 12</span><button class="btn" id="quizReset">Start again</button></div>
+    <div class="quiz" id="quiz"></div>
+  </section>
+
+  <footer>
+    <p><b>Data used:</b> covalent atomic radius F 71, Cl 99, Br 114, I 133 pm; Pauling electronegativity F 4.0, Cl 3.0, Br 2.8, I 2.5; melting points F₂ 53, Cl₂ 172, Br₂ 266, I₂ 387 K; boiling points F₂ 85, Cl₂ 238, Br₂ 332, I₂ 457 K; electrons per molecule F₂ 18, Cl₂ 34, Br₂ 70, I₂ 106. Values differ slightly between data books. Specification: OxfordAQA International AS Chemistry 9620, section 3.2.3; Required practical 3.</p>
+    <p><b>Model limits:</b> particle pictures show the pattern, not real spacing or speed. Colours are typical; real colours depend on concentration. Water-treatment doses are illustrative; 5 mg dm⁻³ is the World Health Organization guideline maximum for chlorine in drinking water. Fluorine reactions are shown for comparison only: fluorine is too dangerous for school laboratories.</p>
+  </footer>
+</div>
+<script>
+const $ = s => document.querySelector(s);
+const $$ = s => Array.from(document.querySelectorAll(s));
+const NS = 'http://www.w3.org/2000/svg';
+function el(tag, attrs, parent, text){ const e=document.createElementNS(NS,tag); for(const k in attrs) e.setAttribute(k,attrs[k]); if(text!=null) e.textContent=text; if(parent) parent.appendChild(e); return e; }
+const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+function shuffle(a){ for(let i=a.length-1;i>0;i--){ const j=Math.floor(Math.random()*(i+1)); [a[i],a[j]]=[a[j],a[i]]; } return a; }
+function setPressed(host,btn){ host.querySelectorAll('button').forEach(b=>b.setAttribute('aria-pressed',b===btn)); }
+const cap=s=>s[0].toUpperCase()+s.slice(1);
+function rng(seed){ let a=seed>>>0; return ()=>{ a=(a+0x6D2B79F5)>>>0; let t=a; t=Math.imul(t^(t>>>15),t|1); t^=t+Math.imul(t^(t>>>7),t|61); return ((t^(t>>>14))>>>0)/4294967296; }; }
+const SUPD={'-':'⁻','0':'⁰','1':'¹','2':'²','3':'³','4':'⁴','5':'⁵','6':'⁶','7':'⁷','8':'⁸','9':'⁹'};
+function sci(v){ const e=Math.floor(Math.log10(v)), m=v/10**e; return `${m.toFixed(1)} × 10${String(e).split('').map(c=>SUPD[c]).join('')}`; }
+function rowBtns(host,labels,onPick,sel){ host.innerHTML=labels.map((l,i)=>`<button class="chip" aria-pressed="${i===sel}">${l}</button>`).join(''); host.querySelectorAll('button').forEach((b,i)=>b.addEventListener('click',()=>{ setPressed(host,b); onPick(i,b); })); }
+
+/* ---------- tabs ---------- */
+const TABS=['trend','disp','acid','ag','cl','exam','quiz']; // TOPIC: one id per station tab
+function showTab(id){ TABS.forEach(t=>{ const on=t===id, b=$('#tab-'+t); b.setAttribute('aria-selected',on); b.tabIndex=on?0:-1; $('#p-'+t).hidden=!on; }); }
+TABS.forEach((t,i)=>{ const b=$('#tab-'+t); b.addEventListener('click',()=>showTab(t));
+  b.addEventListener('keydown',e=>{ if(e.key!=='ArrowRight'&&e.key!=='ArrowLeft') return; const n=TABS[(i+(e.key==='ArrowRight'?1:TABS.length-1))%TABS.length]; showTab(n); $('#tab-'+n).focus(); }); });
+
+/* generic bar chart */
+function barChart(svg,o){ svg.innerHTML=''; const {W,x0,y0,y1,max,step,unit,items,sel,onPick}=o, bw=(W-x0-20)/items.length, y=v=>y0-(v/max)*(y0-y1);
+  for(let v=0;v<=max;v+=step){ el('line',{x1:x0,y1:y(v),x2:W-10,y2:y(v),stroke:'var(--line)'},svg); el('text',{x:x0-8,y:y(v)+4,'text-anchor':'end',class:'s-mut'},svg,v); }
+  el('text',{x:16,y:(y0+y1)/2,'text-anchor':'middle',class:'s-mut',transform:`rotate(-90 16 ${(y0+y1)/2})`},svg,unit);
+  items.forEach((it,i)=>{ const x=x0+i*bw+bw*0.17, w=bw*0.66, g=el('g',{class:'pt-cell',tabindex:0,role:'button','aria-label':`${it.label}: ${it.v} ${o.u}`},svg);
+    el('rect',{x,y:y(it.v),width:w,height:y0-y(it.v),rx:3,fill:it.col,opacity:i===sel?1:0.45},g);
+    el('text',{x:x+w/2,y:y(it.v)-6,'text-anchor':'middle',class:'s-txt','font-weight':i===sel?700:400},g,it.v);
+    el('text',{x:x+w/2,y:y0+20,'text-anchor':'middle',class:'s-txt','font-weight':700},g,it.label);
+    if(onPick){ g.addEventListener('click',()=>onPick(i)); g.addEventListener('keydown',e=>{ if(e.key==='Enter'||e.key===' '){ e.preventDefault(); onPick(i); } }); } });
+  el('line',{x1:x0,y1:y0,x2:W-10,y2:y0,stroke:'var(--ink)','stroke-width':1.5},svg); }
+
+
+/* ---------- quiz engine: QUIZ = [{q, o:[correct first, ...distractors], a:0, e:"why"}] ---------- */
+const QS={ans:{}};
+function shuffleQ(){ QUIZ.forEach(it=>{ it.order=shuffle(it.o.map((_,i)=>i)); }); }
+function renderQuiz(){ const host=$('#quiz'); host.innerHTML='';
+  QUIZ.forEach((it,n)=>{ const d=document.createElement('div'); d.className='q';
+    d.innerHTML=`<span class="qn">Question ${n+1}</span><p class="qt">${it.q}</p><div class="opts"></div><p class="fb" hidden></p>`;
+    const opts=d.querySelector('.opts'), fb=d.querySelector('.fb');
+    it.order.forEach(oi=>{ const b=document.createElement('button'); b.className='opt'; b.textContent=it.o[oi]; b.dataset.i=oi;
+      b.addEventListener('click',()=>{ if(n in QS.ans) return; QS.ans[n]=oi; opts.querySelectorAll('.opt').forEach(x=>{ x.disabled=true; if(+x.dataset.i===it.a) x.classList.add('right'); });
+        if(oi!==it.a) b.classList.add('wrong'); fb.hidden=false; fb.innerHTML=`<b>${oi===it.a?'Correct.':'Not quite.'}</b> ${it.e}`; qScore(); });
+      opts.appendChild(b); });
+    host.appendChild(d); });
+  qScore(); }
+function qScore(){ const r=Object.keys(QS.ans).filter(k=>QS.ans[k]===QUIZ[k].a).length; $('#score').textContent=`${r} / ${QUIZ.length}`; }
+$('#quizReset').addEventListener('click',()=>{ QS.ans={}; shuffleQ(); renderQuiz(); });
+function openHash(){ const h=(location.hash||'').slice(1); if(TABS.includes(h)) showTab(h); }
+/* the LAST station file ends with:  shuffleQ(); renderQuiz(); openHash(); */
+/* ================= shared Group 7 data and drawing helpers ================= */
+const HX=[
+  {s:'F',n:'Fluorine',m:'F₂',r:71,en:4.0,mp:53,bp:85,e:18,z:9,inner:2,sh:2,look:'pale yellow gas',v:'var(--h-f)'},
+  {s:'Cl',n:'Chlorine',m:'Cl₂',r:99,en:3.0,mp:172,bp:238,e:34,z:17,inner:10,sh:3,look:'pale green gas',v:'var(--h-cl)'},
+  {s:'Br',n:'Bromine',m:'Br₂',r:114,en:2.8,mp:266,bp:332,e:70,z:35,inner:28,sh:4,look:'red-brown liquid',v:'var(--h-br)'},
+  {s:'I',n:'Iodine',m:'I₂',r:133,en:2.5,mp:387,bp:457,e:106,z:53,inner:46,sh:5,look:'grey-black solid',v:'var(--h-i)'}];
+/* real colours of chemicals (fixed, not themed) */
+const COL={cl2aq:'#d6eaa0',br2aq:'#f0a43c',i2aq:'#8f5424',clOrg:'#e6f0c4',brOrg:'#e2622c',iOrg:'#8e44c8',
+  agcl:'#f7f7f3',agbr:'#eedb9c',agi:'#e3c832',ag2co3:'#efe6c8',s:'#e5cb2b',i2s:'#2b2430',brF:'#b4532a',iF:'#8a4bc0',powder:'#f1f1ea',
+  f2:'#e8df8a',cl2:'#b9d86a',br2l:'#7a1d10',br2v:'#c4622e',i2v:'#9a5cc8',
+  uiRed:'#d8382f',uiGreen:'#5aa83c',uiPurple:'#6b3fa0',uiOrange:'#ef8a23'};
+function mix(a,b,t){ const p=h=>[1,3,5].map(i=>parseInt(h.slice(i,i+2),16)); const A=p(a),B=p(b); return '#'+A.map((v,i)=>Math.round(v+(B[i]-v)*clamp(t,0,1)).toString(16).padStart(2,'0')).join(''); }
+const ease=t=>t<.5?2*t*t:1-Math.pow(-2*t+2,2)/2;
+
+/* test tube: liquid, optional top layer, precipitate, solid heap */
+function tube(svg,o){ const x=o.x, top=o.top??30, bot=o.bot??250, w=o.w??54, r=w/2, ir=r-3, g=el('g',{},svg);
+  const bowl=y=>`M${x-ir} ${y} V${bot-r} A${ir} ${ir} 0 0 0 ${x+ir} ${bot-r} V${y} Z`;
+  if(o.solid){ const sy=bot-o.solid; el('path',{d:bowl(sy),style:`fill:${o.solidCol||COL.powder}`,stroke:'var(--glass)','stroke-width':.6},g);
+    if(o.spots) o.spots.forEach(([c,f],k)=>{ const R=rng(77+k); for(let j=0;j<Math.round(40*f);j++){ const a=R()*Math.PI, rr=R()*(ir-4); el('circle',{cx:x+Math.cos(a)*rr*(R()<.5?-1:1),cy:bot-r+Math.sin(a)*rr*0.9-(R()*(o.solid-r)*.6),r:2+R()*1.6,style:`fill:${c}`},g); } }); }
+  if(o.liq>0){ const ly=bot-r-o.liq*(bot-r-top-14);
+    el('path',{d:bowl(ly),style:`fill:${o.col||'var(--aq)'}`,opacity:o.op??1},g);
+    if(o.ppt>0){ el('path',{d:bowl(ly),style:`fill:${o.pptCol}`,opacity:.55*o.ppt},g); const R=rng(o.seed||3);
+      for(let j=0;j<Math.round(60*o.ppt);j++){ const yy=bot-r+ir*.6-R()*(bot-ly-r)*(.25+.75*(o.cloud??1)); el('circle',{cx:x-ir+5+R()*(ir*2-10),cy:Math.max(ly+3,yy),r:2.2,style:`fill:${o.pptCol}`,stroke:'var(--muted)','stroke-width':.35},g); } }
+    if(o.layer>0){ const h=o.layer*(bot-r-top-14); el('rect',{x:x-ir,y:ly-h,width:ir*2,height:h,style:`fill:${o.layerCol||'var(--org)'}`},g);
+      el('line',{x1:x-ir,y1:ly,x2:x+ir,y2:ly,stroke:'var(--muted)','stroke-width':.8,'stroke-dasharray':'3 3'},g); }
+    if(o.fizz) for(let j=0;j<9;j++){ const yy=bot-r-((o.fizz*70+j*29)%Math.max(20,bot-r-ly)); el('circle',{cx:x-ir+6+((j*19)%(ir*2-12)),cy:yy,r:2.5,fill:'none',stroke:'var(--muted)','stroke-width':1.1},g); } }
+  el('path',{d:`M${x-r} ${top} V${bot-r} A${r} ${r} 0 0 0 ${x+r} ${bot-r} V${top}`,fill:'none',stroke:'var(--glass)','stroke-width':3,'stroke-linecap':'round'},g);
+  if(o.label) el('text',{x,y:bot+22,'text-anchor':'middle',class:'s-txt','font-weight':700},g,o.label);
+  if(o.sub) el('text',{x,y:bot+40,'text-anchor':'middle',class:'s-mut'},g,o.sub);
+  return g; }
+/* rising fumes from (x,y): t in seconds, k = strength 0..1 */
+function fumes(svg,x,y,col,t,k,seed,op){ const R=rng(seed), n=Math.round(14*k);
+  for(let j=0;j<n;j++){ const ph=(t*0.45+j/n+R()*0.1)%1, rise=ph*120, rr=5+ph*16;
+    el('circle',{cx:x+(R()-.5)*26+Math.sin(t*1.3+j)*8*ph,cy:y-rise,r:rr,style:`fill:${col}`,opacity:(op??.55)*(1-ph)*k},svg); } }
+/* dropper above a tube; drop falls when 0<d<1 */
+function dropper(svg,x,y,col,d){ el('rect',{x:x-9,y:y-46,width:18,height:22,rx:8,fill:'var(--muted)'},svg);
+  el('path',{d:`M${x-5} ${y-26} H${x+5} L${x+2} ${y} H${x-2} Z`,fill:'var(--surface)',stroke:'var(--glass)','stroke-width':1.5},svg);
+  el('rect',{x:x-3,y:y-18,width:6,height:16,style:`fill:${col}`,opacity:.9},svg);
+  if(d>0&&d<1) el('circle',{cx:x,cy:y+6+d*80,r:4,style:`fill:${col}`,stroke:'var(--muted)','stroke-width':.5},svg); }
+/* animation runner: f(p, now) with p 0..1 over ms; returns cancel */
+function anim(ms,f,done){ const t0=performance.now(); let id; const go=now=>{ const p=clamp((now-t0)/ms,0,1); f(p,now); if(p<1) id=requestAnimationFrame(go); else if(done) done(); }; id=requestAnimationFrame(go); return ()=>cancelAnimationFrame(id); }
+const visible=id=>!$('#p-'+id).hidden;
+function chipRow(host,labels,onPick,sel){ rowBtns(host,labels,onPick,sel); }
+function markChips(host,right,picked){ host.querySelectorAll('button').forEach((b,k)=>{ b.classList.remove('ans-right','ans-wrong'); if(k===right) b.classList.add('ans-right'); else if(k===picked) b.classList.add('ans-wrong'); }); }
+function clearMarks(host){ host.querySelectorAll('button').forEach(b=>{ b.classList.remove('ans-right','ans-wrong'); b.setAttribute('aria-pressed','false'); }); }
+/* ================= STATION 1: trends ================= */
+const LOOPS=[];
+function master(now){ LOOPS.forEach(([id,f])=>{ if(visible(id)) f(now/1000); }); requestAnimationFrame(master); }
+const T1={i:0,prop:'r',pred:{}};
+const P1={r:{lab:'Atomic radius',unit:'radius / pm',u:'pm',max:150,step:50,ans:0,q:'Down the group, atomic radius will…',why:'Each element has one more shell of electrons, so the atoms get larger.'},
+  en:{lab:'Electronegativity',unit:'Pauling scale',u:'',max:4,step:1,ans:1,q:'Down the group, electronegativity will…',why:'The bonding pair is further from the nucleus and more shielded by inner shells, so it is attracted less strongly. The extra nuclear charge is outweighed by the extra shielding.'},
+  bp:{lab:'Boiling point',unit:'boiling point / K',u:'K',max:500,step:100,ans:0,q:'Down the group, boiling point will…',why:'The molecules have more electrons, so the van der Waals forces between molecules are stronger and need more energy to overcome.'}};
+const PREDS=['increase','decrease','stay about the same'];
+const TCAP=['<b>Fluorine has 2 shells.</b> Its small atom attracts a bonding pair more strongly than any other element (electronegativity 4.0). F₂ has only 18 electrons, so the van der Waals forces between molecules are weak: it boils at 85 K.',
+  '<b>Chlorine has one more shell than fluorine</b>, so its atom is bigger (99 pm) and a bonding pair is further from the nucleus: electronegativity falls to 3.0. Cl₂ has 34 electrons, so van der Waals forces are stronger, but it is still a gas at 298 K (boils at 238 K).',
+  '<b>Bromine has 4 shells</b> (114 pm, electronegativity 2.8). Br₂ has 70 electrons; its van der Waals forces are strong enough to make it a <b>liquid</b> at 298 K (boils at 332 K).',
+  '<b>Iodine has 5 shells</b> (133 pm) and is the least electronegative of the four (2.5). I₂ has 106 electrons and the strongest van der Waals forces: a <b>solid</b> at 298 K that turns to a purple vapour when warmed.'];
+function stateAt(h,T){ return T<h.mp?'solid':T<h.bp?'liquid':'gas'; }
+function trDraw(){ const svg=$('#trSvg'); svg.innerHTML=''; const h=HX[T1.i], k=0.85, cx=165, cy=150, R=h.r*k;
+  HX.forEach((g,j)=>{ if(j===T1.i) return; el('circle',{cx,cy,r:g.r*k,fill:'none',stroke:'var(--line)','stroke-dasharray':'4 4'},svg);
+    el('text',{x:cx+g.r*k*0.72+4,y:cy-g.r*k*0.72,class:'s-mut'},svg,g.s); });
+  const inR=14+(R-14)*((h.sh-1)/h.sh);
+  el('circle',{cx,cy,r:inR,fill:'var(--muted)',opacity:.12},svg);
+  for(let s=1;s<=h.sh;s++){ const rr=14+(R-14)*(s/h.sh); el('circle',{cx,cy,r:rr,fill:'none',stroke:s===h.sh?'var(--ink)':'var(--line)','stroke-width':s===h.sh?1.6:1},svg); }
+  for(let e=0;e<7;e++){ const a=-Math.PI/2+e*2*Math.PI/8; el('circle',{cx:cx+Math.cos(a)*R,cy:cy+Math.sin(a)*R,r:5,style:`fill:${h.v}`,stroke:'var(--ink)','stroke-width':.8},svg); }
+  el('circle',{cx,cy,r:13,fill:'var(--ink)'},svg); el('text',{x:cx,y:cy+4,'text-anchor':'middle',class:'s-onfill','font-size':10,style:'fill:var(--bg)'},svg,'+'+h.z);
+  el('line',{x1:cx,y1:cy,x2:cx+R*0.94,y2:cy+R*0.34,stroke:'var(--xa)','stroke-width':2},svg);
+  el('text',{x:cx+R*0.5,y:cy+R*0.17+18,class:'s-txt','font-weight':700,style:'fill:var(--xa)'},svg,h.r+' pm');
+  el('text',{x:cx,y:300,'text-anchor':'middle',class:'s-mut'},svg,`${h.sh} shells · drawn to scale`);
+  /* sample jar at 298 K */
+  const jx=380,jy=40,jw=120,jh=200, st=stateAt(h,298); el('rect',{x:jx,y:jy,width:jw,height:jh,rx:12,fill:'var(--surface-2)'},svg);
+  if(st==='gas') el('rect',{x:jx+3,y:jy+3,width:jw-6,height:jh-6,rx:10,style:`fill:${h.s==='F'?COL.f2:COL.cl2}`,opacity:.55},svg);
+  if(st==='liquid'){ el('rect',{x:jx+3,y:jy+3,width:jw-6,height:jh-60,rx:10,style:`fill:${COL.br2v}`,opacity:.4},svg); el('rect',{x:jx+3,y:jy+jh-58,width:jw-6,height:55,rx:8,style:`fill:${COL.br2l}`},svg); }
+  if(st==='solid'){ el('rect',{x:jx+3,y:jy+3,width:jw-6,height:jh-6,rx:10,style:`fill:${COL.i2v}`,opacity:.12},svg); const Rn=rng(9);
+    for(let j=0;j<14;j++){ const x=jx+14+Rn()*(jw-28), y=jy+jh-12-Rn()*22; el('rect',{x,y,width:9+Rn()*7,height:5+Rn()*4,transform:`rotate(${Rn()*60-30} ${x} ${y})`,style:`fill:${COL.i2s}`,stroke:'#776f85','stroke-width':.6},svg); } }
+  el('rect',{x:jx,y:jy,width:jw,height:jh,rx:12,fill:'none',stroke:'var(--glass)','stroke-width':3},svg);
+  el('rect',{x:jx+30,y:jy-12,width:jw-60,height:14,rx:3,fill:'var(--muted)'},svg);
+  el('text',{x:jx+jw/2,y:jy+jh+24,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,`${h.m} at 298 K`);
+  el('text',{x:jx+jw/2,y:jy+jh+48,'text-anchor':'middle',class:'s-mut'},svg,h.look);
+  $('#trName').textContent=h.n; $('#trPill').textContent=h.look;
+  const rows=[['r','ATOMIC RADIUS',h.r+' pm'],['en','ELECTRONEGATIVITY',h.en.toFixed(1)],['bp','BOILING POINT',h.bp+' K'],['e','ELECTRONS IN '+h.m,h.e]];
+  $('#trRead').innerHTML=rows.map(([k,l,v])=>`<div class="result${k===T1.prop?' hl':''}"><span class="rl">${l}</span><span class="rv">${v}</span></div>`).join('');
+  $('#trCap').innerHTML=TCAP[T1.i]; chartDraw(); }
+function chartDraw(){ const P=P1[T1.prop], svg=$('#trChart');
+  barChart(svg,{W:360,x0:52,y0:208,y1:22,max:P.max,step:P.step,unit:P.unit,u:P.u,sel:T1.i,onPick:i=>{ T1.i=i; setPressed($('#trPick'),$('#trPick').children[i]); trDraw(); },
+    items:HX.map(h=>({label:h.s,v:h[T1.prop],col:h.v}))});
+  if(T1.prop==='en') svg.querySelectorAll('text[text-anchor="middle"]').forEach(t=>{ if(/^\d$/.test(t.textContent)) t.textContent=(+t.textContent).toFixed(1); });
+  $('#trVeil').hidden=T1.prop in T1.pred; }
+function trProp(k){ T1.prop=k; const P=P1[k]; $('#trPredQ').textContent=P.q;
+  rowBtns($('#trPred'),PREDS,(i)=>{ if(k in T1.pred) return; T1.pred[k]=i; markChips($('#trPred'),P.ans,i);
+    $('#trPredFb').className='msg '+(i===P.ans?'good':'bad'); $('#trPredFb').innerHTML=`<b>${i===P.ans?'Correct':'Not quite'}: it will ${PREDS[P.ans]}.</b> ${P.why}`; chartDraw(); },-1);
+  if(k in T1.pred){ markChips($('#trPred'),P.ans,T1.pred[k]); $('#trPredFb').className='msg '+(T1.pred[k]===P.ans?'good':'bad'); $('#trPredFb').innerHTML=`<b>It will ${PREDS[P.ans]}.</b> ${P.why}`; }
+  else { $('#trPredFb').className='msg'; $('#trPredFb').textContent='Choose one to reveal the chart.'; }
+  trDraw(); }
+rowBtns($('#trPick'),HX.map(h=>h.m),i=>{ T1.i=i; trDraw(); },0);
+$('#trProp').innerHTML=Object.entries(P1).map(([k,P])=>`<button data-k="${k}" aria-pressed="${k==='r'}">${P.lab}</button>`).join('');
+$$('#trProp button').forEach(b=>b.addEventListener('click',()=>{ setPressed($('#trProp'),b); trProp(b.dataset.k); }));
+
+/* heat the halogens */
+const ST={T:298};
+function stDraw(t){ const svg=$('#stSvg'); svg.innerHTML='';
+  HX.forEach((h,k)=>{ const bx=8+k*138, bw=128, by=28, bh=172, st=stateAt(h,ST.T), R=rng(30+k), mr=4.6+k*0.8, sp=Math.sqrt(ST.T)/9;
+    el('rect',{x:bx,y:by,width:bw,height:bh,rx:8,fill:'var(--surface-2)',stroke:'var(--line)'},svg);
+    el('text',{x:bx+bw/2,y:20,'text-anchor':'middle',class:'s-head'},svg,h.m);
+    for(let m=0;m<9;m++){ const ph=R()*6.28, ang0=R()*3.14; let x,y,a;
+      if(st==='solid'){ x=bx+30+(m%3)*34+Math.sin(t*9+ph)*ST.T/h.mp*1.2; y=by+bh-66+Math.floor(m/3)*22+Math.cos(t*8+ph)*ST.T/h.mp; a=0; }
+      else if(st==='liquid'){ x=bx+22+(m%3)*38+R()*10+Math.sin(t*1.1*sp+ph)*9; y=by+bh-72+Math.floor(m/3)*21+R()*6+Math.cos(t*0.9*sp+ph)*5; a=ang0+Math.sin(t*0.7+ph); }
+      else { const vx=(R()-.5)*60*sp, vy=(R()-.5)*60*sp; x=bx+12+(((R()*(bw-24)+vx*t)%(bw-24))+(bw-24))%(bw-24); y=by+12+(((R()*(bh-24)+vy*t)%(bh-24))+(bh-24))%(bh-24); a=ang0+t*sp; }
+      const dx=Math.cos(a)*mr*0.85, dy=Math.sin(a)*mr*0.85;
+      el('circle',{cx:x-dx,cy:y-dy,r:mr,style:`fill:${h.v}`,stroke:'var(--ink)','stroke-width':.6},svg); el('circle',{cx:x+dx,cy:y+dy,r:mr,style:`fill:${h.v}`,stroke:'var(--ink)','stroke-width':.6},svg); }
+    el('text',{x:bx+bw/2,y:by+bh+20,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,st);
+    el('text',{x:bx+bw/2,y:by+bh+38,'text-anchor':'middle',class:'s-mut'},svg,`mp ${h.mp} · bp ${h.bp} K`); }); }
+function stSet(T){ ST.T=T; $('#stT').value=T; $('#stOut').textContent=T+' K';
+  const s=HX.map(h=>`${h.m} ${stateAt(h,T)}`).join(', ');
+  $('#stCap').innerHTML=`<b>At ${T} K:</b> ${s}. ${T===298?'This is room temperature. ':''}Watch the pairs: on melting and boiling, molecules move apart but every X₂ molecule stays whole. Only the <b>van der Waals forces between molecules</b> are overcome; the covalent X–X bond does not break.`; }
+$('#stT').addEventListener('input',e=>stSet(+e.target.value));
+$('#stJump').innerHTML=[[60,'60 K'],[200,'200 K'],[298,'298 K (room)'],[350,'350 K'],[470,'470 K']].map(([v,l])=>`<button class="btn" data-t="${v}">${l}</button>`).join('');
+$$('#stJump button').forEach(b=>b.addEventListener('click',()=>stSet(+b.dataset.t)));
+stSet(298);
+
+/* van der Waals panel */
+const VDW={t0:-99};
+const VCAP=['F₂ has 18 electrons in a small cloud that is hard to distort. Temporary dipoles are small, so the forces are weak (bp 85 K).','Cl₂ has 34 electrons. Its larger cloud distorts more easily, giving larger temporary dipoles (bp 238 K).','Br₂ has 70 electrons. Temporary dipoles are larger still, so it is a liquid at room temperature (bp 332 K).','I₂ has 106 electrons: the largest, most easily distorted cloud and the strongest van der Waals forces (bp 457 K).'];
+function vdwDraw(t){ const svg=$('#vdwSvg'); svg.innerHTML=''; const h=HX[T1.i], rx=30+h.r*0.24, ry=rx*0.6, cy=95, dt=t-VDW.t0, on=dt>=0&&dt<6, d=on?Math.sin(dt*1.6)*Math.min(1,dt*1.5):0, sh=d*rx*0.22;
+  [[95,sh],[265,sh*0.8]].forEach(([cx,s],m)=>{ el('ellipse',{cx:cx+s,cy,rx,ry,style:`fill:${h.v}`,opacity:.28,stroke:h.v,'stroke-width':1.5},svg);
+    [-1,1].forEach(q=>el('circle',{cx:cx+q*rx*0.42,cy,r:6,fill:'var(--ink)'},svg)); el('line',{x1:cx-rx*.42,y1:cy,x2:cx+rx*.42,y2:cy,stroke:'var(--ink)','stroke-width':2},svg);
+    if(on&&Math.abs(d)>0.25){ const neg=d>0?1:-1; el('text',{x:cx+neg*(rx+4),y:cy-ry+4,'text-anchor':'middle',class:'s-txt','font-weight':700,style:'fill:var(--da)'},svg,'δ−'); el('text',{x:cx-neg*(rx+4),y:cy-ry+4,'text-anchor':'middle',class:'s-txt','font-weight':700,style:'fill:var(--xa)'},svg,'δ+'); }
+    el('text',{x:cx,y:cy+ry+18,'text-anchor':'middle',class:'s-mut'},svg,m?'induced dipole':'temporary dipole'); });
+  if(on&&Math.abs(d)>0.25) el('line',{x1:95+rx+sh,y1:cy,x2:265-rx+sh*0.8,y2:cy,stroke:'var(--da)','stroke-width':2.5,'stroke-dasharray':'5 4'},svg);
+  const bw=300*h.bp/457; el('rect',{x:30,y:178,width:300,height:16,rx:4,fill:'var(--surface-2)',stroke:'var(--line)'},svg);
+  el('rect',{x:30,y:178,width:bw,height:16,rx:4,fill:'var(--xa)'},svg);
+  el('text',{x:30,y:214,class:'s-mut'},svg,`energy to separate molecules: bp ${h.bp} K`);
+  el('text',{x:180,y:22,'text-anchor':'middle',class:'s-head'},svg,`${h.m}: ${h.e} electrons per molecule`); }
+$('#vdwGo').addEventListener('click',()=>{ VDW.t0=performance.now()/1000; $('#vdwCap').innerHTML=`<b>Electrons move unevenly for an instant, making a temporary dipole.</b> It induces a dipole in the neighbouring molecule, and the two attract. ${VCAP[T1.i]}`; });
+LOOPS.push(['trend',t=>{ stDraw(t); vdwDraw(t); }]);
+$('#vdwCap').textContent='Press the button to see how a temporary dipole forms and induces a dipole in a neighbour. Change the halogen above to compare.';
+trProp('r');
+/* ================= STATION 2: displacement ================= */
+const HAL=[{m:'Cl₂',s:'Cl',aq:COL.cl2aq,org:COL.clOrg,cn:'pale green'},{m:'Br₂',s:'Br',aq:COL.br2aq,org:COL.brOrg,cn:'yellow-orange'},{m:'I₂',s:'I',aq:COL.i2aq,org:COL.iOrg,cn:'brown'}];
+const ORGN=['very pale green','orange-red','purple'];
+const KX=['KCl','KBr','KI'], ION=['Cl⁻','Br⁻','I⁻'];
+const D={h:0,x:1,pred:null,done:false,shaken:false,res:{},p:0,sp:0,stop:null};
+function dRes(h,x){ if(x===h) return {r:false,same:true,aq:mix(HAL[h].aq,'#eef3f4',.35),org:HAL[h].org,short:'—',txt:'no change'};
+  if(x>h) return {r:true,aq:HAL[x].aq,org:HAL[x].org,halo:x,short:x===1?'yellow-orange':'brown',txt:`${HAL[x].cn}: ${HAL[x].m} formed`};
+  return {r:false,aq:mix(HAL[h].aq,'#eef3f4',.35),org:HAL[h].org,halo:h,short:'no reaction',txt:'no reaction'}; }
+function dDraw(){ const svg=$('#dSvg'); svg.innerHTML=''; const R=dRes(D.h,D.x), ang=D.sp>0&&D.sp<1?Math.sin(D.sp*Math.PI*6)*14:0;
+  const g=el('g',{transform:`rotate(${ang} 110 190)`},svg), layer=D.shaken&&D.sp>=1?0.22:0;
+  tube(g,{x:110,top:70,bot:300,w:70,liq:.55,col:'var(--aq)'});
+  if(D.p>0) tube(g,{x:110,top:70,bot:300,w:70,liq:.55,col:R.aq,op:D.p*(layer?0.55:0.9),layer,layerCol:R.org});
+  if(!D.done||D.p<1) dropper(svg,110,58,HAL[D.h].aq,D.p>0&&D.p<0.8?(D.p*5)%1:0);
+  el('text',{x:110,y:322,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,`${KX[D.x]}(aq)${D.p>0?' + '+HAL[D.h].m:''}`);
+  if(layer){ el('text',{x:152,y:150,class:'s-mut'},svg,'← cyclohexane'); el('text',{x:152,y:230,class:'s-mut'},svg,'← water'); }
+  /* electron transfer */
+  const ex=300; el('text',{x:ex+105,y:40,'text-anchor':'middle',class:'s-head'},svg,'Electron transfer');
+  el('rect',{x:ex,y:70,width:70,height:44,rx:8,fill:'var(--da-soft)',stroke:'var(--da)'},svg); el('text',{x:ex+35,y:98,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,'2'+ION[D.x]);
+  el('rect',{x:ex+140,y:70,width:70,height:44,rx:8,fill:'var(--xa-soft)',stroke:'var(--xa)'},svg); el('text',{x:ex+175,y:98,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,HAL[D.h].m);
+  el('line',{x1:ex+74,y1:92,x2:ex+134,y2:92,stroke:'var(--ink)','stroke-width':2,'marker-end':''},svg); el('path',{d:`M${ex+128} 86 L${ex+136} 92 L${ex+128} 98`,fill:'none',stroke:'var(--ink)','stroke-width':2},svg);
+  if(D.done&&!R.r&&!R.same){ el('text',{x:ex+105,y:82,'text-anchor':'middle',class:'s-txt','font-weight':800,style:'fill:var(--bad)'},svg,'✕'); el('text',{x:ex+105,y:140,'text-anchor':'middle',class:'s-mut'},svg,'no electron transfer'); }
+  else if(D.done&&R.r){ const q=clamp((D.p-0.3)/0.6,0,1); [0,1].forEach(j=>el('circle',{cx:ex+80+q*50+j*10,cy:92-6+j*12,r:4.5,fill:'var(--share)',stroke:'var(--ink)','stroke-width':.6},svg));
+    el('text',{x:ex+105,y:80,'text-anchor':'middle',class:'s-mut'},svg,'2e⁻');
+    el('text',{x:ex+35,y:136,'text-anchor':'middle',class:'s-mut'},svg,'oxidised'); el('text',{x:ex+35,y:152,'text-anchor':'middle',class:'s-mut'},svg,'−1 → 0');
+    el('text',{x:ex+175,y:136,'text-anchor':'middle',class:'s-mut'},svg,'reduced'); el('text',{x:ex+175,y:152,'text-anchor':'middle',class:'s-mut'},svg,'0 → −1'); }
+  $('#dName').textContent=`${HAL[D.h].m} + ${KX[D.x]}`; }
+function dGrid(){ let h='<span></span>'+KX.map(k=>`<span class="gh">${k}(aq)</span>`).join('');
+  HAL.forEach((hh,i)=>{ h+=`<span class="gr">${hh.m}(aq)</span>`; KX.forEach((_,j)=>{ if(i===j) h+='<span class="cell na">same halogen</span>'; else { const f=D.res[i+''+j], R=dRes(i,j); h+=`<span class="cell${f?' found':''}">${f?(R.r?`<span><i class="swatch" style="background:${R.aq}"></i>${R.short}</span>`:'no reaction'):'?'}</span>`; } }); });
+  $('#dGrid').innerHTML=h; const n=Object.keys(D.res).length; $('#dCount').textContent=n; $('#dVer').hidden=n<6; }
+function dReset(){ if(D.stop) D.stop(); D.p=0; D.sp=0; D.done=false; D.shaken=false; D.pred=null; clearMarks($('#dPred')); $('#dPredFb').className='msg'; $('#dPredFb').textContent='Make a prediction to unlock the dropper.';
+  $('#dGo').disabled=true; $('#dShake').disabled=true; $('#dPill').textContent='ready'; $('#dEq').textContent='Equation appears here.'; $('#dCap').textContent=''; dDraw(); }
+$('#dKey').innerHTML='In water: '+HAL.map(h=>`<i class="swatch" style="background:${h.aq}"></i>${h.m} ${h.cn}`).join(' · ')+'<br>In cyclohexane: '+HAL.map((h,k)=>`<i class="swatch" style="background:${h.org}"></i>${h.m} ${ORGN[k]}`).join(' · ');
+rowBtns($('#dHal'),HAL.map(h=>h.m+'(aq)'),i=>{ D.h=i; dReset(); },0);
+rowBtns($('#dHx'),KX.map(k=>k+'(aq)'),i=>{ D.x=i; dReset(); },1);
+rowBtns($('#dPred'),['It reacts','No reaction'],i=>{ if(D.done) return; D.pred=i; $('#dGo').disabled=false; $('#dPredFb').className='msg'; $('#dPredFb').textContent='Prediction saved. Now add the halogen solution.'; },-1);
+$('#dGo').addEventListener('click',()=>{ if(D.done) return; D.done=true; $('#dGo').disabled=true; const R=dRes(D.h,D.x);
+  D.stop=anim(2600,p=>{ D.p=p; dDraw(); },()=>{ $('#dShake').disabled=false; });
+  const right=R.r?0:1; markChips($('#dPred'),right,D.pred); $('#dPredFb').className='msg '+(D.pred===right?'good':'bad');
+  $('#dPredFb').innerHTML=`<b>${D.pred===right?'Your prediction was right.':'Not this time.'}</b> ${R.same?'A halogen cannot displace itself.':R.r?'The halogen added is higher in the group.':'The halogen added is lower in the group.'}`;
+  $('#dPill').textContent=R.txt;
+  $('#dEq').textContent=R.r?`${HAL[D.h].m}(aq) + 2${ION[D.x]}(aq) → 2${ION[D.h]}(aq) + ${HAL[D.x].m}(aq)`:R.same?'No reaction.':`No reaction: ${HAL[D.h].m} cannot oxidise ${ION[D.x]} ions.`;
+  $('#dCap').innerHTML=R.r?`<b>${HAL[D.h].m} is a stronger oxidising agent than ${HAL[D.x].m}.</b> It takes electrons from the ${ION[D.x]} ions: each ${ION[D.x]} ion is oxidised (−1 → 0) and each ${HAL[D.h].s} atom is reduced (0 → −1). The ${HAL[D.x].cn} colour is ${HAL[D.x].m}.`
+    :R.same?'Nothing happens: the solution is just diluted.':`<b>${HAL[D.h].m} is a weaker oxidising agent than ${HAL[D.x].m}</b>, so it cannot take electrons from ${ION[D.x]} ions. The colour is only the ${HAL[D.h].m} solution, diluted. Shake with cyclohexane to check which halogen is present.`;
+  if(!R.same){ D.res[D.h+''+D.x]=1; dGrid(); } });
+$('#dShake').addEventListener('click',()=>{ if(D.shaken) return; D.shaken=true; $('#dShake').disabled=true; const R=dRes(D.h,D.x);
+  D.stop=anim(1500,p=>{ D.sp=p; dDraw(); }); $('#dPill').textContent='cyclohexane layer: '+ORGN[R.halo??D.h];
+  $('#dCap').innerHTML+=` <b>Cyclohexane layer: ${ORGN[R.halo??D.h]}</b>, which shows ${HAL[R.halo??D.h].m} is present. Halogens dissolve better in cyclohexane than in water, so their colours are clearer there.`; });
+$('#dReset').addEventListener('click',dReset);
+
+/* mystery halide Y */
+const MY={y:0,done:[false,false,false],guessed:false,score:0,tries:0};
+function myDraw(){ const svg=$('#mySvg'); svg.innerHTML='';
+  HAL.forEach((hh,k)=>{ const x=100+k*160, done=MY.done[k], halo=MY.y>k?MY.y:k;
+    tube(svg,{x,top:24,bot:200,w:52,liq:.6,col:done?mix(HAL[halo].aq,'#eef3f4',.45):'var(--aq)',layer:done?.25:0,layerCol:HAL[halo].org,label:`Y + ${hh.m}`}); }); }
+function myNew(){ MY.y=Math.floor(Math.random()*3); MY.done=[false,false,false]; MY.guessed=false; clearMarks($('#myGuess'));
+  $('#myCap').className='msg'; $('#myCap').textContent='Each tube is shaken with cyclohexane after mixing. Look at the top layer.'; myDraw(); }
+$('#myAdd').innerHTML=HAL.map((h,k)=>`<button class="btn" data-k="${k}">Add ${h.m}(aq)</button>`).join('');
+$$('#myAdd button').forEach(b=>b.addEventListener('click',()=>{ MY.done[+b.dataset.k]=true; myDraw(); }));
+rowBtns($('#myGuess'),ION,(i,b)=>{ if(MY.guessed) return; if(!MY.done.some(Boolean)){ $('#myCap').textContent='Add at least one halogen solution first.'; b.setAttribute('aria-pressed','false'); return; }
+  MY.guessed=true; MY.tries++; const ok=i===MY.y; if(ok) MY.score++; markChips($('#myGuess'),MY.y,i); $('#myScore').textContent=`${MY.score} / ${MY.tries}`;
+  $('#myCap').className='msg '+(ok?'good':'bad');
+  $('#myCap').innerHTML=`<b>${ok?'Correct':'Not this time'}: Y contains ${ION[MY.y]}.</b> `+['Chlorine gives a very pale layer, so Cl₂ did not displace anything: there is no Br⁻ or I⁻.','Chlorine turns the layer orange-red, so Br₂ formed: chlorine displaced bromine. Bromine does not change.','Even bromine turns the layer purple, so I₂ formed: iodide is displaced by both Cl₂ and Br₂.'][MY.y]; },-1);
+$('#myNew').addEventListener('click',myNew);
+
+/* why oxidising ability falls */
+const EA={i:0};
+function eaDraw(t){ const svg=$('#eaSvg'); svg.innerHTML=''; const h=HX[EA.i], cx=120, cy=108, R=h.r*0.62, inR=10+(R-10)*((h.sh-1)/h.sh), pull=71/h.r;
+  el('circle',{cx,cy,r:inR,fill:'var(--muted)',opacity:.16},svg);
+  for(let s=1;s<=h.sh;s++) el('circle',{cx,cy,r:10+(R-10)*(s/h.sh),fill:'none',stroke:s===h.sh?'var(--ink)':'var(--line)'},svg);
+  el('circle',{cx,cy,r:11,fill:'var(--ink)'},svg); el('text',{x:cx,y:cy+4,'text-anchor':'middle',class:'s-onfill','font-size':9,style:'fill:var(--bg)'},svg,'+'+h.z);
+  const ph=(t%2.6)/2.6, ex=340-ease(Math.min(1,ph*1.4))*(340-(cx+R+6));
+  el('line',{x1:cx+12,y1:cy,x2:ex-6,y2:cy,stroke:'var(--xa)','stroke-width':1+5*pull,opacity:.75,'stroke-dasharray':'6 4'},svg);
+  el('circle',{cx:ex,cy,r:6,fill:'var(--share)',stroke:'var(--ink)'},svg); el('text',{x:ex,y:cy-12,'text-anchor':'middle',class:'s-mut'},svg,'e⁻');
+  el('text',{x:cx,y:cy+R+20,'text-anchor':'middle',class:'s-mut'},svg,`shielded by ${h.inner} inner electrons`);
+  el('rect',{x:20,y:226,width:300,height:14,rx:4,fill:'var(--surface-2)',stroke:'var(--line)'},svg); el('rect',{x:20,y:226,width:300*pull,height:14,rx:4,fill:'var(--xa)'},svg);
+  el('text',{x:20,y:252,class:'s-mut'},svg,'pull on the incoming electron (model, F = 1)'); }
+rowBtns($('#eaPick'),HX.map(h=>h.n),i=>{ EA.i=i; const h=HX[i];
+  $('#eaCap').innerHTML=`<b>${h.n}: nuclear charge +${h.z}, but ${h.inner} inner electrons shield it.</b> An electron gained would enter a shell ${h.r} pm from the nucleus. `+(i?`That is further away and more shielded than in ${HX[i-1].n.toLowerCase()}, so the electron is attracted less strongly: ${h.m} is a weaker oxidising agent.`:'This is the closest, least shielded outer shell, so fluorine gains electrons most readily: F₂ is the strongest oxidising agent.'); },0);
+$('#eaCap').innerHTML='<b>Fluorine: nuclear charge +9, but 2 inner electrons shield it.</b> This is the closest, least shielded outer shell, so fluorine gains electrons most readily: F₂ is the strongest oxidising agent.';
+LOOPS.push(['disp',eaDraw]);
+dReset(); dGrid(); myNew();
+/* ================= STATION 3: halides + concentrated sulfuric acid ================= */
+const AH=[
+  {f:'NaF',x:'F⁻',low:6,ans:0,fumes:[['var(--mist)',1]],obs:['Steamy (misty) white fumes of hydrogen fluoride, HF','The fumes turn damp blue litmus paper red'],
+   eqs:[['NaF + H₂SO₄ → NaHSO₄ + HF','acid–base: no element changes oxidation state']],fd:'misty fumes only: acid–base',
+   cap:'<b>F⁻ is too weak a reducing agent to reduce sulfuric acid.</b> The acid simply donates a proton, so only HF forms. (HF is extremely toxic: this is never done in schools.)'},
+  {f:'NaCl',x:'Cl⁻',low:6,ans:0,fumes:[['var(--mist)',1]],obs:['Misty white fumes of hydrogen chloride, HCl','The fumes turn damp blue litmus paper red'],
+   eqs:[['NaCl + H₂SO₄ → NaHSO₄ + HCl','acid–base: Cl stays −1, S stays +6']],fd:'misty fumes only: acid–base',
+   cap:'<b>Cl⁻ is not a strong enough reducing agent to reduce sulfuric acid.</b> H₂SO₄ acts only as an acid. This is how HCl gas is made in the lab.'},
+  {f:'NaBr',x:'Br⁻',low:4,ans:1,fumes:[['var(--mist)',.6],[COL.brF,1]],obs:['Misty white fumes of HBr','Orange-brown fumes of bromine, Br₂','A colourless gas with a choking smell: sulfur dioxide, SO₂'],
+   eqs:[['NaBr + H₂SO₄ → NaHSO₄ + HBr','acid–base step'],['2HBr + H₂SO₄ → Br₂ + SO₂ + 2H₂O','redox: S +6 → +4, Br −1 → 0'],['2H⁺ + 2Br⁻ + H₂SO₄ → Br₂ + SO₂ + 2H₂O','ionic form (OxfordAQA CH01, June 2025, Q01.3)']],fd:'Br₂ and SO₂: S reduced to +4',
+   cap:'<b>Br⁻ is a stronger reducing agent than Cl⁻.</b> After the acid–base step, bromide ions are oxidised to bromine and reduce the sulfur from +6 to +4 (SO₂). Here sulfuric acid is an <b>oxidising agent</b>.'},
+  {f:'NaI',x:'I⁻',low:-2,ans:2,fumes:[['var(--mist)',.3],[COL.iF,1]],obs:['Only a little misty fumes: most HI is oxidised','Purple fumes and a black solid: iodine, I₂','A yellow solid: sulfur, S','A smell of bad eggs: hydrogen sulfide, H₂S'],
+   eqs:[['NaI + H₂SO₄ → NaHSO₄ + HI','acid–base step'],['2HI + H₂SO₄ → I₂ + SO₂ + 2H₂O','S +6 → +4'],['6HI + H₂SO₄ → 3I₂ + S + 4H₂O','S +6 → 0'],['8HI + H₂SO₄ → 4I₂ + H₂S + 4H₂O','S +6 → −2']],fd:'I₂, S and H₂S: S reduced to −2',
+   cap:'<b>I⁻ is the strongest reducing agent of the four.</b> Iodide ions are large, so their outer electrons are far from the nucleus and well shielded: they are lost easily. They reduce sulfur all the way from +6 to −2.'}];
+const APRED=['Not reduced (stays +6)','Reduced to SO₂ (+4)','Reduced further, to S and H₂S'];
+const A3={i:1,pred:null,done:false,p:0,found:{}};
+function aDraw(t){ const svg=$('#aSvg'); svg.innerHTML=''; const a=AH[A3.i], p=A3.p, x=150;
+  const spots=A3.i===3&&p>0?[[COL.i2s,.9*p],[COL.s,.5*clamp(p*1.5-.5,0,1)]]:null;
+  tube(svg,{x,top:60,bot:300,w:64,solid:34,solidCol:COL.powder,spots,liq:p>0?0.1+0.06*p:0,col:A3.i===2?mix('#eceff1',COL.brF,p*.6):A3.i===3?mix('#eceff1','#5a3a2a',p*.8):'#eceff1',op:.85});
+  if(!A3.done) dropper(svg,x,48,'#dfe3e6',0); else if(p<.35) dropper(svg,x,48,'#dfe3e6',(p*6)%1);
+  if(A3.done) a.fumes.forEach(([c,k],j)=>fumes(svg,x,56,c,t+j*.7,k*clamp(p*2.2-.3,0,1),11+j*5,j?.7:.5));
+  const lit=A3.done?clamp(p*2-.6,0,1):0; el('rect',{x:190,y:34,width:70,height:12,rx:2,style:`fill:${mix('#4a78c8',COL.uiRed,lit)}`},svg);
+  el('text',{x:268,y:44,class:'s-mut'},svg,'damp blue litmus');
+  if(A3.i===3&&p>.7){ el('rect',{x:248,y:118,width:150,height:30,rx:15,fill:'var(--surface-2)',stroke:'var(--line)'},svg); el('text',{x:323,y:138,'text-anchor':'middle',class:'s-txt'},svg,'smells of bad eggs'); }
+  el('text',{x,y:322,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,`${a.f}(s)${A3.done?' + conc. H₂SO₄':''}`);
+  if(A3.done&&p>=1){ const lab=[['HF'],['HCl'],['HBr','Br₂','SO₂'],['HI','I₂','S','H₂S','SO₂']][A3.i];
+    el('text',{x:330,y:190,class:'s-head'},svg,'Products'); lab.forEach((s,k)=>el('text',{x:330,y:214+k*20,class:'s-txt'},svg,s)); } }
+function aRender(){ const a=AH[A3.i]; $('#aName').textContent=a.f+'(s)';
+  $('#aObs').innerHTML=A3.done&&A3.p>=1?a.obs.map(o=>`<li>${o}</li>`).join(''):'<li>'+(A3.done?'Reacting…':'Choose a solid, predict, then add the acid.')+'</li>';
+  $('#aEqs').innerHTML=A3.done&&A3.p>=1?a.eqs.map(([e,s])=>`<p class="eqn">${e}<small>${s}</small></p>`).join(''):'<p class="small">Equations appear after the reaction.</p>';
+  $('#aFind').innerHTML=AH.map((h,k)=>`<div class="finding${A3.found[k]?' found':''}"><span class="ft">${h.f}</span><span class="st">${A3.found[k]?'seen':'not yet'}</span><span class="fd">${A3.found[k]?h.fd:'Run this reaction to fill in.'}</span></div>`).join('');
+  ladDraw(); }
+function aReset(){ A3.done=false; A3.p=0; A3.pred=null; clearMarks($('#aPred')); $('#aGo').disabled=true; $('#aPill').textContent='ready'; $('#aCap').textContent='';
+  $('#aPredFb').className='msg'; $('#aPredFb').textContent='Make a prediction to unlock the acid.'; aDraw(0); aRender(); }
+rowBtns($('#aPick'),AH.map(a=>a.f),i=>{ A3.i=i; aReset(); },1);
+rowBtns($('#aPred'),APRED,i=>{ if(A3.done) return; A3.pred=i; $('#aGo').disabled=false; $('#aPredFb').className='msg'; $('#aPredFb').textContent='Prediction saved. Add the acid.'; },-1);
+$('#aGo').addEventListener('click',()=>{ if(A3.done) return; A3.done=true; $('#aGo').disabled=true; const a=AH[A3.i]; $('#aPill').textContent='reacting';
+  anim(3200,p=>{ A3.p=p; },()=>{ A3.found[A3.i]=1; $('#aPill').textContent=a.low===6?'acid–base only':'redox'; aRender();
+    markChips($('#aPred'),a.ans,A3.pred); $('#aPredFb').className='msg '+(A3.pred===a.ans?'good':'bad'); $('#aPredFb').innerHTML=`<b>${A3.pred===a.ans?'Correct':'Not quite'}: ${APRED[a.ans].toLowerCase()}.</b>`; $('#aCap').innerHTML=a.cap; }); aRender(); });
+$('#aReset').addEventListener('click',aReset);
+LOOPS.push(['acid',t=>aDraw(t)]);
+
+/* oxidation-state ladder */
+function ladDraw(){ const svg=$('#ladSvg'); svg.innerHTML=''; const y=os=>190-25*os;
+  el('line',{x1:60,y1:28,x2:60,y2:256,stroke:'var(--ink)','stroke-width':1.5},svg);
+  [[6,'H₂SO₄'],[4,'SO₂'],[0,'S'],[-2,'H₂S']].forEach(([o,s])=>{ el('line',{x1:54,y1:y(o),x2:330,y2:y(o),stroke:'var(--line)','stroke-dasharray':'3 4'},svg);
+    el('text',{x:48,y:y(o)+4,'text-anchor':'end',class:'s-txt','font-weight':700},svg,(o>0?'+':o<0?'−':'')+Math.abs(o)); el('text',{x:68,y:y(o)-6,class:'s-mut'},svg,s); });
+  AH.forEach((a,k)=>{ const x=150+k*50, on=k===A3.i, c=on?'var(--da)':'var(--muted)', op=on?1:.45;
+    if(!A3.found[k]) el('text',{x,y:y(6)+5,'text-anchor':'middle',class:'s-txt','font-weight':800,opacity:op},svg,'?');
+    else if(a.low===6) el('circle',{cx:x,cy:y(6),r:7,fill:'none',stroke:c,'stroke-width':2.5,opacity:op},svg);
+    else { el('line',{x1:x,y1:y(6),x2:x,y2:y(a.low)-8,stroke:c,'stroke-width':on?5:3,opacity:op},svg); el('path',{d:`M${x-8} ${y(a.low)-12} L${x} ${y(a.low)} L${x+8} ${y(a.low)-12}`,fill:c,opacity:op},svg);
+      if(a.low<4) [4,0].forEach(o=>el('circle',{cx:x,cy:y(o),r:4.5,fill:'var(--surface)',stroke:c,'stroke-width':2,opacity:op},svg)); }
+    el('text',{x,y:280,'text-anchor':'middle',class:'s-txt','font-weight':on?800:400},svg,a.x); });
+  el('text',{x:240,y:298,'text-anchor':'middle',class:'s-mut'},svg,'reducing power increases →');
+  const a=AH[A3.i]; $('#ladCap').innerHTML=!A3.found[A3.i]?`Run the reaction with ${a.f} to place ${a.x} on the ladder.`:a.low===6?`<b>${a.x}: sulfur stays at +6.</b> No redox happens; H₂SO₄ only acts as an acid.`:a.low===4?'<b>Br⁻: sulfur falls from +6 to +4</b> (SO₂). Each sulfur atom gains 2 electrons.':'<b>I⁻: sulfur falls from +6 to +4, 0 and −2</b> (SO₂, S and H₂S). Reaching −2 needs 8 electrons per sulfur atom, so iodide is the strongest reducing agent.'; }
+
+/* balance it */
+const HBP=[{m:'SO₂',os:'+4',e:2,red:'H₂SO₄ + 2H⁺ + 2e⁻ → SO₂ + 2H₂O',all:'2I⁻ + H₂SO₄ + 2H⁺ → I₂ + SO₂ + 2H₂O'},
+  {m:'S',os:'0',e:6,red:'H₂SO₄ + 6H⁺ + 6e⁻ → S + 4H₂O',all:'6I⁻ + H₂SO₄ + 6H⁺ → 3I₂ + S + 4H₂O'},
+  {m:'H₂S',os:'−2',e:8,red:'H₂SO₄ + 8H⁺ + 8e⁻ → H₂S + 4H₂O',all:'8I⁻ + H₂SO₄ + 8H⁺ → 4I₂ + H₂S + 4H₂O'}];
+const HB={k:2,n:2};
+function hbShow(ok){ const P=HBP[HB.k]; $('#hbN').textContent=HB.n;
+  $('#hbOut').innerHTML=`<p class="eqn">2I⁻ → I₂ + 2e⁻<small>oxidation: each I⁻ ion gives 1 electron</small></p><p class="eqn">${ok?P.red:`H₂SO₄ → ${P.m}`}<small>reduction: sulfur +6 → ${P.os}${ok?'':', so how many electrons does each H₂SO₄ gain?'}</small></p>`+(ok?`<p class="eqn"><b>${P.all}</b><small>overall: ${P.e} electrons lost = ${P.e} electrons gained${HB.k===2?' · AQA AS Paper 1, June 2023, Q06.3':''}</small></p>`:''); }
+$('#hbProd').innerHTML=HBP.map((P,k)=>`<button data-k="${k}" aria-pressed="${k===2}">${P.m}</button>`).join('');
+$$('#hbProd button').forEach(b=>b.addEventListener('click',()=>{ HB.k=+b.dataset.k; setPressed($('#hbProd'),b); $('#hbFb').className='msg'; $('#hbFb').textContent=''; hbShow(false); }));
+$('#hbMinus').addEventListener('click',()=>{ HB.n=Math.max(1,HB.n-1); hbShow(false); }); $('#hbPlus').addEventListener('click',()=>{ HB.n=Math.min(10,HB.n+1); hbShow(false); });
+$('#hbCheck').addEventListener('click',()=>{ const P=HBP[HB.k], ok=HB.n===P.e; hbShow(ok); $('#hbFb').className='msg '+(ok?'good':'bad');
+  $('#hbFb').innerHTML=ok?`<b>Balanced.</b> ${P.e} I⁻ ions give the ${P.e} electrons that one H₂SO₄ needs to become ${P.m}.`:`<b>Not balanced.</b> ${HB.n} I⁻ ions give ${HB.n} electron${HB.n>1?'s':''}, but sulfur going from +6 to ${P.os} needs ${HB.n<P.e?'more':'fewer'}.`; });
+hbShow(false); aReset();
+/* ================= STATION 4: halide tests ================= */
+const AGX=[{x:'F⁻',f:'NaF',ag:null,col:null},{x:'Cl⁻',f:'NaCl',ag:'white',col:COL.agcl,s:'AgCl'},{x:'Br⁻',f:'NaBr',ag:'cream',col:COL.agbr,s:'AgBr'},{x:'I⁻',f:'NaI',ag:'yellow',col:COL.agi,s:'AgI'}];
+const GSTEP=['dilute HNO₃','AgNO₃(aq)','dilute NH₃(aq)','conc. NH₃(aq)'];
+const G4={mode:'all',step:-1,p:1,x:0,score:0,tries:0,guessed:false};
+function gAmt(k,s){ if(s<1||k===0) return 0; if(s===1) return 1; if(s===2) return k===1?0:1; return k===3?1:0; }
+function gObsText(k,s){ if(s===0) return 'no visible change'; if(s===1) return k?`${AGX[k].ag} precipitate`:'no precipitate';
+  if(k===0) return '—'; if(s===2) return k===1?'precipitate dissolves':'does not dissolve'; return k===1?'(already dissolved)':k===2?'precipitate dissolves':'does not dissolve'; }
+const GCAP=['<b>Dilute nitric acid first.</b> It removes carbonate and hydroxide ions, which would also give a precipitate with silver ions. There is no visible change.',
+  '<b>Ag⁺(aq) + X⁻(aq) → AgX(s).</b> AgCl is white, AgBr cream and AgI yellow. AgF is soluble, so fluoride gives no precipitate. The three colours are hard to tell apart, so ammonia is used to confirm.',
+  '<b>Only AgCl dissolves in dilute ammonia.</b> AgBr and AgI stay as precipitates.',
+  '<b>AgBr dissolves in concentrated ammonia; AgI does not dissolve even in concentrated ammonia.</b> The solubility of the silver halides in ammonia decreases down the group.'];
+function gDraw(){ const svg=$('#gSvg'); svg.innerHTML=''; const ks=G4.mode==='all'?[0,1,2,3]:[G4.x], s=G4.step;
+  ks.forEach((k,j)=>{ const x=G4.mode==='all'?75+j*137:280, a0=gAmt(k,s-1), a1=gAmt(k,s), amt=s<0?0:a0+(a1-a0)*G4.p;
+    tube(svg,{x,top:24,bot:236,w:56,liq:0.3+0.12*Math.max(0,s+1)-(s>=0&&G4.p<1?0.12*(1-G4.p):0),col:'var(--aq)',ppt:amt,pptCol:AGX[k].col||COL.agcl,seed:40+k,cloud:.6,
+      label:G4.mode==='all'?AGX[k].x:'X',sub:G4.mode==='all'?AGX[k].f+'(aq)':'unknown halide'}); });
+  if(s>=0&&G4.p<1) (G4.mode==='all'?[75,212,349,486]:[280]).forEach(x=>dropper(svg,x,16,'#e3e8ea',(G4.p*3)%1)); }
+function gObs(){ const ks=G4.mode==='all'?[0,1,2,3]:[G4.x], s=G4.step;
+  $('#gObs').innerHTML=ks.map(k=>`<div><b>${G4.mode==='all'?AGX[k].x:'Tube X'}</b>${s<0?'<span class="small">no reagents yet</span>':''}${[1,2,3].filter(q=>q<=s).map(q=>`<span class="small">${GSTEP[q]}: ${gObsText(k,q)}</span>`).join('')}</div>`).join('');
+  [0,1,2,3].forEach(q=>{ $('#gS'+q).disabled=q!==s+1; $('#gS'+q).classList.toggle('primary',q===s+1); });
+  $('#gPill').textContent=s<3?`step ${s+2} of 4`:'test complete'; }
+function gStep(q){ if(q!==G4.step+1) return; G4.step=q; G4.p=0; $('#gCap').innerHTML=GCAP[q]; gObs(); anim(1400,p=>{ G4.p=p; gDraw(); }); }
+[0,1,2,3].forEach(q=>$('#gS'+q).addEventListener('click',()=>gStep(q)));
+function gFresh(){ G4.step=-1; G4.p=1; G4.guessed=false; clearMarks($('#gGuess'));
+  if(G4.mode==='mys'){ G4.x=Math.floor(Math.random()*4); $('#gCap').textContent='Tube X contains F⁻, Cl⁻, Br⁻ or I⁻. Run the steps in order, then decide.'; }
+  else $('#gCap').textContent='Run the four steps in order and compare the tubes.'; gDraw(); gObs(); }
+$('#gReset').addEventListener('click',gFresh);
+$$('#gMode button').forEach(b=>b.addEventListener('click',()=>{ G4.mode=b.dataset.m; setPressed($('#gMode'),b); $('#gGuessBox').hidden=G4.mode!=='mys'; $('#gTitle').textContent=G4.mode==='all'?'All four halides':'Mystery tube'; gFresh(); }));
+rowBtns($('#gGuess'),AGX.map(a=>a.x),(i,b)=>{ if(G4.guessed) return; if(G4.step<1){ b.setAttribute('aria-pressed','false'); $('#gCap').textContent='Add silver nitrate (step 2) before you decide.'; return; }
+  G4.guessed=true; G4.tries++; const ok=i===G4.x; if(ok) G4.score++; markChips($('#gGuess'),G4.x,i); $('#gScore').textContent=`${G4.score} / ${G4.tries}`;
+  $('#gCap').innerHTML=`<b>${ok?'Correct':'Not this time'}: X contains ${AGX[G4.x].x}.</b> `+['No precipitate with silver nitrate: silver fluoride is soluble.','White precipitate that dissolves in dilute ammonia: AgCl.','Cream precipitate that dissolves only in concentrated ammonia: AgBr.','Yellow precipitate that does not dissolve even in concentrated ammonia: AgI.'][G4.x]+' Press Fresh samples for another.'; },-1);
+
+/* which acid? */
+const GAR={none:[[COL.agcl,1],[COL.ag2co3,.8],[null,0]],hcl:[[COL.agcl,1],[COL.agcl,1],[COL.agcl,1]],hno3:[[COL.agcl,1],[null,0],[null,0]]};
+const GAV={none:['bad','A false positive','The carbonate also gives a precipitate, silver carbonate: 2Ag⁺(aq) + CO₃²⁻(aq) → Ag₂CO₃(s). You could wrongly decide it contains a halide.'],
+  hcl:['bad','Every tube is positive','Hydrochloric acid adds its own chloride ions, so all three tubes give a white precipitate of AgCl. Never acidify with HCl.'],
+  hno3:['good','The correct method','Nitric acid removes the carbonate ions first (fizzing: 2H⁺ + CO₃²⁻ → H₂O + CO₂) and adds no halide ions, so only the chloride gives a precipitate: Ag⁺(aq) + Cl⁻(aq) → AgCl(s).']};
+const GA={a:'hno3',done:null,p:0};
+function gaDraw(){ const svg=$('#gaSvg'); svg.innerHTML=''; const res=GA.done?GAR[GA.done]:[[null,0],[null,0],[null,0]];
+  [['NaCl','chloride'],['Na₂CO₃','carbonate'],['NaNO₃','nitrate']].forEach(([f,n],i)=>{ const x=110+i*170, q=clamp((GA.p-.45)/.55,0,1), fizz=GA.done&&GA.done!=='none'&&i===1&&GA.p<.6?GA.p*20+1:0;
+    tube(svg,{x,top:20,bot:222,w:54,liq:.55,col:'var(--aq)',ppt:res[i][0]?res[i][1]*q:0,pptCol:res[i][0]||COL.agcl,seed:60+i,fizz,label:f+'(aq)',sub:n}); }); }
+$$('#gAcid button').forEach(b=>b.addEventListener('click',()=>{ GA.a=b.dataset.a; setPressed($('#gAcid'),b); GA.done=null; GA.p=0; gaDraw(); $('#gaVer').className='verdict'; $('#gaVer').innerHTML='<strong>Run the test with this acid.</strong>'; }));
+$('#gaGo').addEventListener('click',()=>{ GA.done=GA.a; anim(1800,p=>{ GA.p=p; gaDraw(); }); const [k,h,t]=GAV[GA.a]; $('#gaVer').className='verdict '+k; $('#gaVer').innerHTML=`<strong>${h}</strong><span>${t}</span>`; });
+gFresh(); gaDraw();
+/* ================= STATION 5: chlorine and water ================= */
+const CRX=[
+  {lab:'Chlorine + water',eq:'Cl₂(aq) + H₂O(l) ⇌ HCl(aq) + HClO(aq)',ans:2,fd:'disproportionation: 0 → −1 and +1',
+   cap:'<b>Disproportionation.</b> One chlorine atom is reduced (0 → −1, in HCl) and the other is oxidised (0 → +1, in HClO, chloric(I) acid). HClO kills bacteria, which is why chlorine is used to treat water. Water is neither oxidised nor reduced.',ends:[[-1,'HCl'],[1,'HClO']],part:'H₂O'},
+  {lab:'Water + sunlight',eq:'2Cl₂(aq) + 2H₂O(l) → 4HCl(aq) + O₂(g)',ans:1,fd:'not disproportionation: Cl 0 → −1 only',
+   cap:'<b>Not disproportionation.</b> In bright sunlight every chlorine atom is reduced (0 → −1) and oxygen is oxidised (−2 → 0), giving bubbles of O₂. Chlorine water left in sunlight slowly loses its chlorine.',ends:[[-1,'HCl'],[-1,'HCl']],part:'H₂O'},
+  {lab:'Cold dilute NaOH',eq:'Cl₂ + 2NaOH → NaCl + NaClO + H₂O   (ionic: Cl₂ + 2OH⁻ → Cl⁻ + ClO⁻ + H₂O)',ans:2,fd:'disproportionation: bleach forms',
+   cap:'<b>Disproportionation.</b> Chlorine goes to −1 in NaCl and +1 in NaClO, sodium chlorate(I). This solution is household <b>bleach</b>: it kills bacteria and removes stains.',ends:[[-1,'Cl⁻'],[1,'ClO⁻']],part:'OH⁻'}];
+const CPRED=['Oxidised only','Reduced only','Both oxidised and reduced'];
+const C5={k:0,pred:null,done:false,p:0,found:{}};
+function cDraw(){ const svg=$('#cSvg'); svg.innerHTML=''; const R=CRX[C5.k], p=C5.done?C5.p:0, a=ease(clamp((p-.35)/.5,0,1)), y=os=>160-os*85;
+  const atoms=[[150-22,150],[150+22,150]], dest=R.ends.map(([o],j)=>o<0?[80+j*70,250]:[250,70]);
+  const pos=atoms.map((s,j)=>[s[0]+(dest[j][0]-s[0])*a,s[1]+(dest[j][1]-s[1])*a]);
+  const pin=clamp(p/.35,0,1); el('text',{x:150,y:24,'text-anchor':'middle',class:'s-head'},svg,a<1?'Cl₂ + '+R.part:'products');
+  if(a<1){ const px=310-120*pin; el('circle',{cx:px,cy:150,r:15,fill:'#d24a3c',opacity:1-a},svg); el('text',{x:px,y:155,'text-anchor':'middle',class:'s-onfill','font-size':12},svg,'O');
+    if(R.part==='H₂O'){ el('circle',{cx:px+14,cy:138,r:8,fill:'#e8eceb',stroke:'var(--muted)',opacity:1-a},svg); } el('circle',{cx:px+14,cy:162,r:8,fill:'#e8eceb',stroke:'var(--muted)',opacity:1-a},svg); }
+  if(a<0.2) el('line',{x1:pos[0][0],y1:pos[0][1],x2:pos[1][0],y2:pos[1][1],stroke:'var(--ink)','stroke-width':3},svg);
+  pos.forEach(([x,yy],j)=>{ const [o,sp]=R.ends[j]; el('circle',{cx:x,cy:yy,r:18,style:'fill:var(--h-cl)',stroke:'var(--ink)'},svg); el('text',{x,y:yy+5,'text-anchor':'middle',class:'s-txt','font-weight':800},svg,'Cl');
+    const os=a>=1?o:0; el('rect',{x:x-17,y:yy-44,width:34,height:20,rx:10,fill:os<0?'var(--xa-soft)':os>0?'var(--da-soft)':'var(--surface-2)',stroke:os<0?'var(--xa)':os>0?'var(--da)':'var(--line)'},svg);
+    el('text',{x,y:yy-30,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,os>0?'+1':os<0?'−1':'0');
+    if(a>=1){ el('text',{x,y:yy+38,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,sp); if(o>0){ el('circle',{cx:x+28,cy:yy,r:12,fill:'#d24a3c'},svg); el('text',{x:x+28,y:yy+4,'text-anchor':'middle',class:'s-onfill','font-size':10},svg,'O'); } } });
+  if(C5.k===1&&a>0) for(let j=0;j<3;j++){ const by=280-((p*160+j*50)%150); el('circle',{cx:250+j*16,cy:by,r:7,fill:'none',stroke:'#d24a3c','stroke-width':2},svg); }
+  if(C5.k===1&&a>=1) el('text',{x:270,y:300,'text-anchor':'middle',class:'s-mut'},svg,'O₂ bubbles: O −2 → 0');
+  /* oxidation-state line */
+  const lx=450; el('line',{x1:lx,y1:y(1)-10,x2:lx,y2:y(-1)+10,stroke:'var(--ink)','stroke-width':1.5},svg);
+  [1,0,-1].forEach(o=>{ el('line',{x1:lx-6,y1:y(o),x2:lx+6,y2:y(o),stroke:'var(--ink)'},svg); el('text',{x:lx-14,y:y(o)+5,'text-anchor':'end',class:'s-txt','font-weight':700},svg,o>0?'+1':o<0?'−1':'0'); });
+  el('text',{x:lx,y:y(1)-24,'text-anchor':'middle',class:'s-mut'},svg,'oxidation state of Cl');
+  if(a>=1){ const ups=R.ends.some(([o])=>o>0); el('path',{d:`M${lx+18} ${y(0)} V${y(-1)-8}`,stroke:'var(--xa)','stroke-width':4,fill:'none'},svg); el('path',{d:`M${lx+11} ${y(-1)-14} L${lx+18} ${y(-1)} L${lx+25} ${y(-1)-14}`,fill:'var(--xa)'},svg);
+    el('text',{x:lx+32,y:(y(0)+y(-1))/2+4,class:'s-txt',style:'fill:var(--xa)'},svg,'reduced');
+    if(ups){ el('path',{d:`M${lx+18} ${y(0)} V${y(1)+8}`,stroke:'var(--da)','stroke-width':4,fill:'none'},svg); el('path',{d:`M${lx+11} ${y(1)+14} L${lx+18} ${y(1)} L${lx+25} ${y(1)+14}`,fill:'var(--da)'},svg);
+      el('text',{x:lx+32,y:(y(0)+y(1))/2+4,class:'s-txt',style:'fill:var(--da)'},svg,'oxidised'); } } }
+function cRender(){ $('#cName').textContent=CRX[C5.k].lab;
+  $('#cFind').innerHTML=CRX.map((r,k)=>`<div class="finding${C5.found[k]?' found':''}"><span class="ft">${r.lab}</span><span class="st">${C5.found[k]?'seen':'not yet'}</span><span class="fd">${C5.found[k]?r.fd:'Run this reaction to fill in.'}</span></div>`).join(''); }
+function cReset(){ C5.done=false; C5.p=0; C5.pred=null; clearMarks($('#cPred')); $('#cGo').disabled=true; $('#cPill').textContent='ready'; $('#cEq').textContent='Run a reaction to see its equation.'; $('#cCap').textContent='';
+  $('#cPredFb').className='msg'; $('#cPredFb').textContent='Make a prediction to unlock the reaction.'; cDraw(); cRender(); }
+$('#cRx').innerHTML=CRX.map((r,k)=>`<button data-k="${k}" aria-pressed="${k===0}">${r.lab}</button>`).join('');
+$$('#cRx button').forEach(b=>b.addEventListener('click',()=>{ C5.k=+b.dataset.k; setPressed($('#cRx'),b); cReset(); }));
+rowBtns($('#cPred'),CPRED,i=>{ if(C5.done) return; C5.pred=i; $('#cGo').disabled=false; $('#cPredFb').className='msg'; $('#cPredFb').textContent='Prediction saved. Run the reaction.'; },-1);
+$('#cGo').addEventListener('click',()=>{ if(C5.done) return; C5.done=true; $('#cGo').disabled=true; const R=CRX[C5.k];
+  anim(3000,p=>{ C5.p=p; cDraw(); },()=>{ C5.found[C5.k]=1; cRender(); $('#cEq').textContent=R.eq; $('#cCap').innerHTML=R.cap; $('#cPill').textContent=R.ans===2?'disproportionation':'redox';
+    markChips($('#cPred'),R.ans,C5.pred); $('#cPredFb').className='msg '+(C5.pred===R.ans?'good':'bad'); $('#cPredFb').innerHTML=`<b>${C5.pred===R.ans?'Correct':'Not quite'}: ${CPRED[R.ans].toLowerCase()}.</b>`; }); });
+
+/* universal indicator */
+const UIS=[{lab:'Chlorine water',c0:COL.cl2aq,path:[[0,COL.uiGreen],[.2,COL.uiRed],[1,'#eef2ee']],cap:'<b>Red, then colourless.</b> HCl and HClO make the solution acidic, so the indicator turns red. Then HClO, chloric(I) acid, <b>bleaches</b> the indicator.'},
+  {lab:'Dilute HCl',c0:'#e6eef0',path:[[0,COL.uiGreen],[.2,COL.uiRed],[1,COL.uiRed]],cap:'<b>Red, and it stays red.</b> Hydrochloric acid is acidic but is not a bleach. So the bleaching in chlorine water must come from HClO.'},
+  {lab:'Bleach (NaClO)',c0:'#f2f0d6',path:[[0,COL.uiGreen],[.2,COL.uiPurple],[1,'#eef2ee']],cap:'<b>Purple, then colourless.</b> Bleach made from chlorine and NaOH is alkaline, so the indicator turns purple. The chlorate(I) ions, ClO⁻, then bleach it.'}];
+const UI={k:0,p:-1};
+function uiCol(path,p){ for(let j=1;j<path.length;j++) if(p<=path[j][0]) return mix(path[j-1][1],path[j][1],(p-path[j-1][0])/(path[j][0]-path[j-1][0])); return path[path.length-1][1]; }
+function uiDraw(){ const svg=$('#uiSvg'); svg.innerHTML=''; const S=UIS[UI.k], c=UI.p<0?S.c0:uiCol(S.path,UI.p);
+  el('path',{d:'M110 70 V196 Q110 206 120 206 H240 Q250 206 250 196 V70',fill:'none',stroke:'var(--glass)','stroke-width':3},svg);
+  el('path',{d:'M113 110 V194 Q113 203 122 203 H238 Q247 203 247 194 V110 Z',style:`fill:${c}`},svg);
+  if(UI.p>=0&&UI.p<.15) dropper(svg,180,58,COL.uiGreen,UI.p*6%1);
+  el('text',{x:180,y:226,'text-anchor':'middle',class:'s-txt','font-weight':700},svg,S.lab);
+  if(UI.p>=0) el('text',{x:300,y:120,'text-anchor':'middle',class:'s-mut'},svg,`t = ${(UI.p*20).toFixed(0)} s`); }
+$('#uiS').innerHTML=UIS.map((s,k)=>`<button data-k="${k}" aria-pressed="${k===0}">${s.lab}</button>`).join('');
+$$('#uiS button').forEach(b=>b.addEventListener('click',()=>{ UI.k=+b.dataset.k; UI.p=-1; setPressed($('#uiS'),b); $('#uiCap').textContent='Add universal indicator and watch.'; uiDraw(); }));
+$('#uiGo').addEventListener('click',()=>{ anim(4000,p=>{ UI.p=p; uiDraw(); },()=>{ $('#uiCap').innerHTML=UIS[UI.k].cap; }); $('#uiCap').textContent='Watching…'; });
+
+/* water treatment */
+function wtDraw(){ const svg=$('#wtSvg'); svg.innerHTML=''; const d=+$('#wtDose').value, org=$('#wtOrg').checked, kill=1-Math.exp(-d/0.18), tox=clamp(d/8,0,1), byp=clamp((org?d/4:d/40),0,1), R=rng(5);
+  el('rect',{x:8,y:14,width:160,height:170,rx:10,fill:'#dfeef3',stroke:'var(--glass)','stroke-width':2},svg);
+  if(org) for(let j=0;j<10;j++) el('circle',{cx:20+R()*136,cy:30+R()*140,r:3+R()*3,fill:'#9a7b4f',opacity:.6},svg);
+  for(let j=0;j<28;j++){ const x=22+R()*130, y=28+R()*140, a=R()*180, dead=j/28<kill;
+    el('rect',{x:x-8,y:y-3.5,width:16,height:7,rx:3.5,transform:`rotate(${a} ${x} ${y})`,fill:dead?'#b9c2bf':'#2f9a55',stroke:dead?'#8a9592':'#1f6b3a'},svg);
+    if(dead) el('path',{d:`M${x-4} ${y-4} L${x+4} ${y+4} M${x+4} ${y-4} L${x-4} ${y+4}`,stroke:'#b3382f','stroke-width':1.6},svg); }
+  [['bacteria killed',kill,'var(--good)'],['toxic risk',tox,'var(--bad)'],['by-products',byp,'var(--share)']].forEach(([l,v,c],k)=>{ const yy=30+k*58;
+    el('text',{x:186,y:yy,class:'s-mut'},svg,l); el('rect',{x:186,y:yy+8,width:160,height:14,rx:4,fill:'var(--surface-2)',stroke:'var(--line)'},svg);
+    el('rect',{x:186,y:yy+8,width:160*v,height:14,rx:4,fill:c},svg); el('text',{x:346,y:yy,'text-anchor':'end',class:'s-txt','font-weight':700},svg,Math.round(v*100)+'%'); });
+  el('line',{x1:186+160*5/8,y1:92,x2:186+160*5/8,y2:114,stroke:'var(--ink)','stroke-width':2,'stroke-dasharray':'3 2'},svg); el('text',{x:186+160*5/8,y:128,'text-anchor':'middle',class:'s-mut'},svg,'WHO limit');
+  $('#wtOut').textContent=d.toFixed(1)+' mg dm⁻³';
+  const [k,h,t]=d===0?['bad','No chlorine','Bacteria survive: drinking this water risks diseases such as cholera and typhoid.']:d<0.2?['bad','Too little','Some bacteria survive, and no chlorine is left to protect the water as it travels through the pipes.']
+    :d<=1?['good','About right','Bacteria are killed and a small amount of chlorine stays in the water to protect it in the pipes. The toxic risk is tiny, so the health benefits outweigh the risks.']
+    :d<=5?['','More than needed','The water is safe but tastes and smells of chlorine, and the extra chlorine adds risk with no extra benefit.']:['bad','Too much','Above the World Health Organization guideline of 5 mg dm⁻³. Chlorine is toxic, so the risk now outweighs the benefit.'];
+  $('#wtVer').className='verdict '+k; $('#wtVer').innerHTML=`<strong>${h}</strong><span>${t}${org&&d>0?' Chlorine also reacts with organic matter to form chlorinated hydrocarbons, some of which may cause cancer, so water is filtered before it is chlorinated.':''}</span>`; }
+$('#wtDose').addEventListener('input',wtDraw); $('#wtOrg').addEventListener('change',wtDraw);
+cReset(); uiDraw(); wtDraw(); $('#uiCap').textContent='Choose a solution, then add universal indicator.';
+/* ================= STATION 6: exam practice ================= */
+const OD=[
+  {t:'Acidified AgNO₃ gives a cream precipitate. It dissolves in concentrated ammonia but not in dilute ammonia.',q:'Which ion is present?',o:['Cl⁻','Br⁻','I⁻'],a:1,why:'<b>Br⁻.</b> AgBr is cream and dissolves only in concentrated ammonia.'},
+  {t:'Concentrated H₂SO₄ is added to a white solid. Only misty fumes form, and they turn damp blue litmus red.',q:'Which solid?',o:['NaCl','NaBr','NaI'],a:0,why:'<b>NaCl.</b> Only HCl forms: chloride is too weak a reducing agent to reduce sulfuric acid.'},
+  {t:'Concentrated H₂SO₄ is added to a white solid: purple fumes, a yellow solid and a smell of bad eggs.',q:'Which solid?',o:['NaCl','NaBr','NaI'],a:2,why:'<b>NaI.</b> Iodide reduces sulfur to 0 (yellow S) and −2 (H₂S, bad eggs), and is oxidised to iodine (purple).'},
+  {t:'Chlorine water is added to a colourless solution and shaken with cyclohexane. The top layer turns purple.',q:'Which ion was in the solution?',o:['Cl⁻','Br⁻','I⁻'],a:2,why:'<b>I⁻.</b> Chlorine displaced iodine, which is purple in cyclohexane.'},
+  {t:'Bromine water is added to potassium chloride solution. The orange colour stays and nothing else changes.',q:'What does this show?',o:['Bromine is a weaker oxidising agent than chlorine','Bromine is a stronger oxidising agent than chlorine','Chloride ions are oxidised by bromine'],a:0,why:'<b>Bromine cannot oxidise Cl⁻ ions</b>, so it is a weaker oxidising agent than chlorine.'},
+  {t:'Universal indicator is added to chlorine water. It turns red, then colourless.',q:'Why?',o:['Acids form, then HClO bleaches the indicator','Only HCl forms, which bleaches','The water is alkaline'],a:0,why:'<b>HCl and HClO are acids</b> (red); HClO then bleaches the indicator.'},
+  {t:'A solution contains a halide ion, but no precipitate forms with acidified silver nitrate.',q:'Which ion?',o:['F⁻','Cl⁻','I⁻'],a:0,why:'<b>F⁻.</b> Silver fluoride is soluble, so no precipitate forms.'},
+  {t:'Concentrated H₂SO₄ is added to a white solid: misty fumes, orange-brown fumes and a choking gas.',q:'Which solid?',o:['NaCl','NaBr','NaI'],a:1,why:'<b>NaBr.</b> Bromide reduces sulfur to +4 (SO₂, choking) and is oxidised to bromine (orange-brown).'}];
+const ODS={};
+function odRender(){ $('#odCards').innerHTML=OD.map((c,k)=>`<div class="card${k in ODS?(ODS[k]===c.a?' right':' wrong'):''}" data-k="${k}"><h3>${c.q}</h3><p>${c.t}</p><div class="choices${c.o.some(o=>o.length>12)?' long':''}">${c.o.map((o,j)=>`<button data-j="${j}"${k in ODS?' disabled':''} class="${k in ODS?(j===c.a?'right':j===ODS[k]?'wrong':''):''}">${o}</button>`).join('')}</div><p class="why"${k in ODS?'':' hidden'}>${c.why}</p></div>`).join('');
+  $$('#odCards .card').forEach(cd=>cd.querySelectorAll('button').forEach(b=>b.addEventListener('click',()=>{ ODS[+cd.dataset.k]=+b.dataset.j; odRender(); })));
+  $('#odScore').textContent=`${Object.keys(ODS).filter(k=>ODS[k]===OD[k].a).length} / ${OD.length}`; }
+$('#odReset').addEventListener('click',()=>{ Object.keys(ODS).forEach(k=>delete ODS[k]); odRender(); });
+
+/* compound X */
+const CAT=['Mg²⁺','Ca²⁺','Ba²⁺'], ANI=['Cl⁻','Br⁻','I⁻'];
+const CXT=[['NaOH(aq)',(c)=>['white precipitate','slight white precipitate','no visible change'][c]],
+  ['Dilute H₂SO₄',(c)=>['no visible change','slight white precipitate','white precipitate'][c]],
+  ['HNO₃, then AgNO₃(aq)',(c,a)=>['white precipitate','cream precipitate','yellow precipitate'][a]],
+  ['Dilute NH₃ on the silver precipitate',(c,a)=>['precipitate dissolves','does not dissolve','does not dissolve'][a]],
+  ['Conc. NH₃ on the silver precipitate',(c,a)=>['precipitate dissolves','precipitate dissolves','does not dissolve'][a]]];
+const CX={c:0,a:0,obs:{},pc:-1,pa:-1,score:0,tries:0,done:false};
+function cxNew(){ CX.c=Math.floor(Math.random()*3); CX.a=Math.floor(Math.random()*3); CX.obs={}; CX.pc=-1; CX.pa=-1; CX.done=false; clearMarks($('#cxCat')); clearMarks($('#cxAn')); $('#cxFb').className='msg'; $('#cxFb').textContent=''; cxObs(); }
+function cxObs(){ const ks=Object.keys(CX.obs); $('#cxObs').innerHTML=ks.length?ks.map(k=>`<li><b>${CXT[k][0]}:</b> ${CXT[k][1](CX.c,CX.a)}</li>`).join(''):'<li>No tests yet.</li>'; }
+$('#cxTests').innerHTML=CXT.map((t,k)=>`<button class="btn" data-k="${k}">${t[0]}</button>`).join('');
+$$('#cxTests button').forEach(b=>b.addEventListener('click',()=>{ CX.obs[b.dataset.k]=1; cxObs(); }));
+rowBtns($('#cxCat'),CAT,i=>{ CX.pc=i; },-1); rowBtns($('#cxAn'),ANI,i=>{ CX.pa=i; },-1);
+$('#cxCheck').addEventListener('click',()=>{ if(CX.done) return; if(CX.pc<0||CX.pa<0){ $('#cxFb').textContent='Choose a metal ion and a halide ion first.'; return; }
+  CX.done=true; CX.tries++; const ok=CX.pc===CX.c&&CX.pa===CX.a; if(ok) CX.score++; $('#cxScore').textContent=`${CX.score} / ${CX.tries}`;
+  markChips($('#cxCat'),CX.c,CX.pc); markChips($('#cxAn'),CX.a,CX.pa); const f=['Mg','Ca','Ba'][CX.c]+['Cl₂','Br₂','I₂'][CX.a];
+  $('#cxFb').className='msg '+(ok?'good':'bad'); $('#cxFb').innerHTML=`<b>${ok?'Correct':'Not this time'}: X is ${f}.</b> NaOH tells Mg²⁺ (white), Ca²⁺ (slight) and Ba²⁺ (none) apart; the silver halide colour and ammonia identify the halide. Ionic equation: Ag⁺(aq) + ${ANI[CX.a]}(aq) → Ag${['Cl','Br','I'][CX.a]}(s).`; });
+$('#cxNew').addEventListener('click',cxNew);
+
+/* exam-style questions with mark scheme */
+const EXQ=[
+  {q:'Concentrated sulfuric acid is added to solid sodium bromide. A gaseous product that contains sulfur forms. Write an equation for the reaction of bromide ions with sulfuric acid to form this product. Give one observation. State the role of the sulfuric acid.',m:3,src:'Based on OxfordAQA CH01, June 2025, Question 01.3',
+   ms:['2H⁺ + 2Br⁻ + H₂SO₄ → Br₂ + SO₂ + 2H₂O (or 2HBr + H₂SO₄ → Br₂ + SO₂ + 2H₂O)','Orange/brown fumes (allow misty fumes)','Oxidising agent']},
+  {q:'Chlorine reacts with water to form two acids. Write an equation for the reaction, and use oxidation states to explain why it is a redox reaction. State the role of the water.',m:3,src:'Based on OxfordAQA CH01, June 2025, Questions 01.5 and 01.6',
+   ms:['Cl₂ + H₂O → HCl + HClO','Chlorine goes from 0 to −1 (in HCl) and from 0 to +1 (in HClO)','Water is neither an oxidising agent nor a reducing agent']},
+  {q:'Explain why the electronegativity of the halogens decreases down the group.',m:2,src:'Based on AQA AS Paper 1 (7404/1), June 2023, Question 06.1',
+   ms:['Atoms get larger / have more shells, with more shielding','The bonding pair is further from the nucleus, so it is attracted less strongly']},
+  {q:'Sodium iodide reacts with concentrated sulfuric acid to form hydrogen sulfide. Write a half-equation for the oxidation of iodide ions, a half-equation for the reduction of H₂SO₄ to H₂S, and the overall equation.',m:3,src:'Based on AQA AS Paper 1 (7404/1), June 2023, Question 06.3',
+   ms:['2I⁻ → I₂ + 2e⁻','H₂SO₄ + 8H⁺ + 8e⁻ → H₂S + 4H₂O','8I⁻ + H₂SO₄ + 8H⁺ → 4I₂ + H₂S + 4H₂O']},
+  {q:'Compound X contains a Group 2 metal ion and a halide ion. Dilute nitric acid then silver nitrate gives a yellow precipitate; sodium hydroxide solution gives a white precipitate. Explain why nitric acid is used, suggest the identity of X, and name a reagent that would confirm the yellow precipitate, with the observation.',m:4,src:'Based on OxfordAQA CH01, June 2025, Questions 05.1 to 05.3',
+   ms:['Nitric acid removes carbonate (or other) ions that would also give a precipitate','X is MgI₂ (allow CaI₂)','Concentrated ammonia solution','The precipitate does not dissolve']}];
+const EX={k:0};
+function exShow(){ const Q=EXQ[EX.k]; $('#exBody').innerHTML=`${Q.q} <b>[${Q.m} marks]</b><span class="src">${Q.src}</span>`; $('#exMS').hidden=true; $('#exAns').value=''; $('#exScore').textContent='';
+  $('#exMS').innerHTML=Q.ms.map((m,j)=>`<label><input type="checkbox" data-j="${j}"><span>${m} <b>(1)</b></span></label>`).join('');
+  $$('#exMS input').forEach(c=>c.addEventListener('change',()=>{ $('#exScore').textContent=`${$$('#exMS input:checked').length} / ${Q.m} marks`; })); }
+$('#exQ').innerHTML=EXQ.map((_,k)=>`<button data-k="${k}" aria-pressed="${k===0}">Q${k+1}</button>`).join('');
+$$('#exQ button').forEach(b=>b.addEventListener('click',()=>{ EX.k=+b.dataset.k; setPressed($('#exQ'),b); exShow(); }));
+$('#exShow').addEventListener('click',()=>{ $('#exMS').hidden=false; $('#exScore').textContent=`0 / ${EXQ[EX.k].m} marks · tick each point you made`; });
+odRender(); cxNew(); exShow();
+
+/* ================= QUIZ ================= */
+const QUIZ=[
+  {q:'Which halogen has the highest boiling point?',o:['I₂','F₂','Cl₂','Br₂'],a:0,e:'I₂ has the most electrons (106), so the strongest van der Waals forces between molecules.'},
+  {q:'Why does boiling point increase down Group 7?',o:['Van der Waals forces between molecules get stronger','The X–X covalent bonds get stronger','Hydrogen bonding increases','Electronegativity increases'],a:0,e:'Larger molecules with more electrons have stronger van der Waals forces. Boiling never breaks the X–X bond.'},
+  {q:'Which mixture reacts?',o:['Cl₂(aq) + KI(aq)','I₂(aq) + KBr(aq)','Br₂(aq) + KCl(aq)','I₂(aq) + KCl(aq)'],a:0,e:'Chlorine is a stronger oxidising agent than iodine, so it oxidises I⁻ to I₂.'},
+  {q:'What colour is iodine dissolved in cyclohexane?',o:['Purple','Orange','Brown','Pale green'],a:0,e:'Iodine is purple (violet) in cyclohexane; it is brown in water.'},
+  {q:'Which halide ion is the strongest reducing agent?',o:['I⁻','F⁻','Cl⁻','Br⁻'],a:0,e:'I⁻ is the largest ion: its outer electrons are furthest from the nucleus and most shielded, so they are lost most easily.'},
+  {q:'What is the role of concentrated H₂SO₄ when it reacts with solid NaCl?',o:['An acid (proton donor)','An oxidising agent','A reducing agent','A catalyst'],a:0,e:'NaCl + H₂SO₄ → NaHSO₄ + HCl is acid–base. No oxidation states change.'},
+  {q:'When NaI reacts with concentrated H₂SO₄, what is the lowest oxidation state that sulfur reaches?',o:['−2, in H₂S','+4, in SO₂','0, in S','+6, in H₂SO₄'],a:0,e:'Iodide reduces sulfur all the way to −2, forming H₂S (bad-egg smell).'},
+  {q:'Why is silver nitrate acidified with dilute nitric acid in the halide test?',o:['To remove carbonate ions that would also give a precipitate','To add chloride ions','To dissolve the silver halide','To make the precipitate darker'],a:0,e:'Carbonate (and hydroxide) ions would also precipitate with Ag⁺. Nitric acid adds no halide ions.'},
+  {q:'Which precipitate dissolves in concentrated ammonia but not in dilute ammonia?',o:['AgBr','AgCl','AgI','AgF'],a:0,e:'AgCl dissolves in dilute ammonia; AgBr only in concentrated; AgI in neither. AgF is soluble anyway.'},
+  {q:'In Cl₂ + H₂O → HCl + HClO, what happens to the oxidation state of chlorine?',o:['0 → −1 and 0 → +1','0 → −1 only','0 → +1 only','−1 → 0 and −1 → +1'],a:0,e:'Chlorine is both reduced and oxidised: a disproportionation reaction.'},
+  {q:'What forms when chlorine reacts with cold, dilute sodium hydroxide?',o:['NaCl, NaClO and H₂O','NaCl and H₂','NaClO₃ and H₂O only','HCl and NaOH'],a:0,e:'Cl₂ + 2NaOH → NaCl + NaClO + H₂O. The solution is bleach.'},
+  {q:'Why is chlorine added to drinking water even though it is toxic?',o:['It kills bacteria, and at low concentration the benefits outweigh the risks','It improves the taste','It removes hardness','It raises the pH'],a:0,e:'Chlorine prevents diseases such as cholera; the dose is kept low because chlorine is toxic.'}];
+shuffleQ(); renderQuiz(); openHash(); requestAnimationFrame(master);
+</script>
+</body>
+</html>
